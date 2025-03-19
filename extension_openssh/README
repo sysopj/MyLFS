@@ -1,0 +1,5 @@
+This directory contains the openssh MyLFS extension.
+
+How to use this extension:
+
+- sudo ./mylfs.sh --extend extension_openssh --start-phase 5

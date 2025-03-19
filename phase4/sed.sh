@@ -1,4 +1,6 @@
 # Sed Phase 4
+SED_VERSION=$((basename $PKG_SED .tar.xz) | cut -d "-" -f 2)
+
 ./configure --prefix=/usr
 
 make
@@ -13,6 +15,6 @@ then
 fi
 
 make install
-install -d -m755 /usr/share/doc/sed-4.8
-install -m644 doc/sed.html /usr/share/doc/sed-4.8
+install -d -m755 /usr/share/doc/sed-$SED_VERSION
+install -m644 doc/sed.html /usr/share/doc/sed-$SED_VERSION
 

@@ -1,7 +1,21 @@
 # Coreutils Phase 4
-patch -Np1 -i ../$(basename $PATCH_COREUTILS)
+if [[ -f ../$(basename $PATCH_COREUTILS) ]]; then
+	patch -Np1 -i ../$(basename $PATCH_COREUTILS)
+fi
 
-autoreconf -fiv
+if [[ -f ../$(basename $PATCH_COREUTILS_CHMOD) ]]; then
+	patch -Np1 -i ../$(basename $PATCH_COREUTILS_CHMOD)
+fi
+
+if [[ "$LFS_VERSION" == "12.2" ]]; then
+	autoreconf -fiv
+fi
+
+if [[ "$LFS_VERSION" == "12.3" ]]; then
+	autoreconf -fv
+	automake -af
+fi
+
 FORCE_UNSAFE_CONFIGURE=1 ./configure \
             --prefix=/usr            \
             --enable-no-install-program=kill,uptime

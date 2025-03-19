@@ -1,0 +1,10 @@
+# build_order.txt
+# <scriptname> (without .sh)
+
+dosfstools
+#mandoc
+efivar
+popt
+efibootmgr
+freetype
+grub

@@ -1,0 +1,8 @@
+On processors with efficency cores, do the following to get full performance on Windows:
+
+powercfg /powerthrottling disable /path "C:\Program Files\Oracle\VirtualBox\VBoxHeadless.exe"
+powercfg /powerthrottling disable /path "C:\Program Files\Oracle\VirtualBox\VirtualBoxVM.exe"
+powercfg /powerthrottling list
+
+To fix slow IOPs on windows:
+Disable "Core isolation","Memory integrity" 
