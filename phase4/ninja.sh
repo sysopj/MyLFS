@@ -1,5 +1,5 @@
 # Ninja Phase 4
-export NINJAJOBS=4
+export NINJAJOBS=$(nproc)}
 
 sed -i '/int Guess/a \
   int   j = 0;\
@@ -18,7 +18,7 @@ then
     set -e
 fi
 
-install -m755 ninja /usr/bin/
-install -Dm644 misc/bash-completion /usr/share/bash-completion/completions/ninja
-install -Dm644 misc/zsh-completion  /usr/share/zsh/site-functions/_ninja
+install -vm755 ninja /usr/bin/
+install -vDm644 misc/bash-completion /usr/share/bash-completion/completions/ninja
+install -vDm644 misc/zsh-completion  /usr/share/zsh/site-functions/_ninja
 

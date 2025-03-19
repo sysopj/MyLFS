@@ -1,5 +1,7 @@
 # Gperf Phase 4
-./configure --prefix=/usr --docdir=/usr/share/doc/gperf-3.1
+GPERF_VERSION=$((basename $PKG_GPERF .tar.gz) | cut -d "-" -f 2)
+
+./configure --prefix=/usr --docdir=/usr/share/doc/gperf-$GPERF_VERSION
 
 make
 

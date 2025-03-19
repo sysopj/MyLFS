@@ -1,0 +1,25 @@
+# Make an array of option in the event of more than 1
+TEMP=($(ls /sources/linux*))
+KERNEL_VERSION=$(basename ${TEMP[-1]} .tar.xz | cut -d "-" -f 2)
+
+pushd /boot &> /dev/null
+	mkinitramfs $KERNEL_VERSION
+popd &> /dev/null
+
+echo "Updating /boot/grub/grub.cfg"
+
+	# Find UUID
+	# If in chroot, lsblk can not show UUIDs or Labels
+DEV=$(ls -al /dev/disk/by-label/ | grep ROOT | sed "s,/,\n,g" | tail -1)
+ARRAY=($(ls -al /dev/disk/by-uuid/ | grep $DEV | sed "s, ,\n,g"))
+ARRAY_COUNT=$(ls -al /dev/disk/by-uuid/ | grep $DEV | sed "s, ,\n,g" | wc -l)
+TEMP=$(($ARRAY_COUNT-4))
+PARTUUID=${ARRAY[$TEMP]}
+
+	# Find Line Numbers
+REPLACE_AT=$(grep -n "vmlinuz-$KERNEL_VERSION" /boot/grub/grub.cfg | cut -d ":" -f 1)
+INSERT_AT=$(($REPLACE_AT+1))
+IsPresent_AT=$(($(grep -n "initrd.img-$KERNEL_VERSION" /boot/grub/grub.cfg | cut -d ":" -f 1)))
+
+sed -i "${REPLACE_AT}c \ \ linux   /vmlinuz-$KERNEL_VERSION-portholes-0.1 rootwait root=UUID=${PARTUUID} ro" /boot/grub/grub.cfg
+[ $IsPresent_AT == 0 ] && sed -i "${INSERT_AT}i \ \ initrd  /initrd.img-$KERNEL_VERSION" /boot/grub/grub.cfg

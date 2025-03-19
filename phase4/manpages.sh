@@ -1,3 +1,10 @@
 # Man Pages Phase 4
-make prefix=/usr install
+if [[ "$LFS_VERSION" == "12.2" ]];then
+	rm -v man3/crypt*
+	make prefix=/usr install
+fi
 
+if [[ "$LFS_VERSION" == "12.3" ]];then
+	rm -v man3/crypt*
+	make -R GIT=false prefix=/usr install
+fi

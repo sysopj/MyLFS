@@ -1,7 +1,9 @@
 # MPC Phase 4
+MPC_VERSION=$((basename $PKG_MPC .tar.gz) | cut -d "-" -f 2)
+
 ./configure --prefix=/usr    \
             --disable-static \
-            --docdir=/usr/share/doc/mpc-1.2.1
+            --docdir=/usr/share/doc/mpc-$MPC_VERSION
 
 make
 make html

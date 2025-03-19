@@ -1,14 +1,12 @@
 # DejaGNU Phase 4
+DEJAGNU_VERSION=$((basename $PKG_DEJAGNU .tar.gz) | cut -d "-" -f 2 )
+
 mkdir build
-cd       build
+cd    build
 
 ../configure --prefix=/usr
 makeinfo --html --no-split -o doc/dejagnu.html ../doc/dejagnu.texi
 makeinfo --plaintext       -o doc/dejagnu.txt  ../doc/dejagnu.texi
-
-make install
-install -dm755  /usr/share/doc/dejagnu-1.6.3
-install -m644   doc/dejagnu.{html,txt} /usr/share/doc/dejagnu-1.6.3
 
 if $RUN_TESTS
 then
@@ -16,4 +14,8 @@ then
     make check
     set -e
 fi
+
+make install
+install -dm755  /usr/share/doc/dejagnu-$DEJAGNU_VERSION
+install -m644   doc/dejagnu.{html,txt} /usr/share/doc/dejagnu-$DEJAGNU_VERSION
 

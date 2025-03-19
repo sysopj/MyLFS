@@ -1,11 +1,29 @@
 # Bash Phase 4
-./configure --prefix=/usr                      \
-            --docdir=/usr/share/doc/bash-5.1.16 \
-            --without-bash-malloc              \
-            --with-installed-readline
+BASH_VERSION=$((basename $PKG_BASH .tar.gz) | cut -d "-" -f 2)
+
+if [[ "$LFS_VERSION" == "11.1" ]] || [[ "$LFS_VERSION" == "11.2" ]]; then
+	./configure --prefix=/usr                      \
+				--docdir=/usr/share/doc/bash-$BASH_VERSION \
+				--without-bash-malloc              \
+				--with-installed-readline
+fi
+
+if [[ "$LFS_VERSION" == "12.2" ]]; then
+./configure --prefix=/usr             \
+            --without-bash-malloc     \
+            --with-installed-readline \
+            bash_cv_strtold_broken=no \
+            --docdir=/usr/share/doc/bash-$BASH_VERSION
+fi
+
+if [[ "$LFS_VERSION" == "12.3" ]]; then
+./configure --prefix=/usr             \
+            --without-bash-malloc     \
+            --with-installed-readline \
+            --docdir=/usr/share/doc/bash-$BASH_VERSION
+fi
 
 make
-
 
 if $RUN_TESTS
 then

@@ -1,4 +1,6 @@
 # Check Phase 4
+CHECK_VERSION=$((basename $PKG_CHECK .tar.gz) | cut -d "-" -f 2)
+
 ./configure --prefix=/usr --disable-static
 
 make
@@ -10,5 +12,4 @@ then
     set -e
 fi
 
-make docdir=/usr/share/doc/check-0.15.2 install
-
+make docdir=/usr/share/doc/check-$CHECK_VERSION install

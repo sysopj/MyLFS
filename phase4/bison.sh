@@ -1,5 +1,7 @@
 # Bison Phase 4
-./configure --prefix=/usr --docdir=/usr/share/doc/bison-3.8.2
+BISON_VERSION=$((basename $PKG_BISON .tar.xz) | cut -d "-" -f 2)
+
+./configure --prefix=/usr --docdir=/usr/share/doc/bison-$BISON_VERSION
 
 make
 

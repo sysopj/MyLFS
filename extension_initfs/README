@@ -1,0 +1,5 @@
+This directory contains the curl MyLFS extension.
+
+How to use this extension:
+
+- sudo ./mylfs.sh --extend extension_curl --start-phase 5
