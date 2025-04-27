@@ -338,6 +338,40 @@ function run_build_12.2_systemd_multilib {
 	build_lfs
 }
 
+function run_build_12.3_initv_multilib {
+	# Start Build Commands
+	echo ""
+	echo "#################"
+	echo "12.3 Init-V Multi"
+	echo "#################"
+	echo ""
+
+	sed -i "s/.*export LFS_VERSION=.*/export LFS_VERSION=12.3/" ./customization_override.sh
+	sed -i "s/.*export LFSINIT=.*/export LFSINIT=initv/" ./customization_override.sh
+	sed -i "s/.*export MULTILIB=.*/export MULTILIB=true/" ./customization_override.sh
+	sed -i "s/.*export MAKEVDI=.*/export MAKEVDI=false/" ./customization_override.sh
+	sed -i "s/.*export ALWAYS_REBUILD=.*/export ALWAYS_REBUILD=true/" ./customization_override.sh
+
+	build_lfs
+}
+
+function run_build_12.3_systemd_multilib {
+	# Start Build Commands
+	echo ""
+	echo "##################"	
+	echo "12.3 SystemD Multi"
+	echo "##################"
+	echo ""
+
+	sed -i "s/.*export LFS_VERSION=.*/export LFS_VERSION=12.3/" ./customization_override.sh
+	sed -i "s/.*export LFSINIT=.*/export LFSINIT=systemd/" ./customization_override.sh
+	sed -i "s/.*export MULTILIB=.*/export MULTILIB=true/" ./customization_override.sh
+	sed -i "s/.*export MAKEVDI=.*/export MAKEVDI=false/" ./customization_override.sh
+	sed -i "s/.*export ALWAYS_REBUILD=.*/export ALWAYS_REBUILD=true/" ./customization_override.sh
+
+	build_lfs
+}
+
 function batch_build_main {
 	if [[ $DEBUG_BATCH_BUILD == "true" ]]; then
 		make_test
@@ -347,7 +381,11 @@ function batch_build_main {
 	run_build_11.2_systemd
 	
 	run_build_12.2_initv
-	run_build_12.2_systemd
+	run_build_12.2_systemd	
+	
+	run_build_12.3_initv
+	run_build_12.3_systemd
+	
 	if [[ $MULTILIB2 == "true" ]] || [[ $MULTILIB_ALWAYS == "true" ]]; then
 		run_build_12.2_initv_multilib
 		run_build_12.2_systemd_multilib

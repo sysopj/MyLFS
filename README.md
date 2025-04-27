@@ -169,6 +169,11 @@
 	```
 	Details on how extensions work can be found in `example_extension/README`.
 
+	Or you can apply an "extensions" later on, to customize your LFS system.
+	```sh
+	sudo ./mylfs.sh --start-phase 5 --extend ./example_extension
+	```
+	Details on how extensions work can be found in `example_extension/README`.
 
 	If you want to poke around inside the image file without booting into it, you can simply use the `--mount` command like so:
 	```sh
@@ -183,7 +188,16 @@
 	```sh
 	sudo ./mylfs.sh --install /dev/<devname>
 	```
+	
+	If you want to backup the LFS IMG file, use:
+	```sh
+	sudo ./mylfs.sh --backup
+	```
 
+	If you want to restore the LFS IMG file, say you increased the root partition size, use:
+	```sh
+	sudo ./mylfs.sh --restore
+	```
 
 	Finally, to clean your workspace:
 	```sh
@@ -238,6 +252,12 @@
 		sed -i 's/GRUB_CMDLINE_LINUX=""/GRUB_CMDLINE_LINUX="syscall.x32=y"/g' /etc/default/grub
 		update-grub2
 
+## Installing
+	After running a successful build: "./mylfs --backup" will produce a .tar.gz file for installing to a new setup.
+	Option 1 (.img):	"./mylfs --restore" will make a new .img file with the size specified in the "config.sh" or the override in "customization.sh"
+	Option 2 (disk):	"./mylfs --install /dev/xxxx" This will overwrite the whole device.  Layout and part sizes will be used except for the root
+						which will use the remaining disk space.
+
 ## Error Codes
 	255 means a build process failed
-	254 means a missing / undefined but required variable
+	254 means a 'missing' or 'undefined' but required variable
