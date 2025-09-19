@@ -3,7 +3,7 @@
 
 	DISKLABEL=$(fdisk -l $GRUB_TARGET | grep Disklabel | cut -d ":" -f 2 | sed "s/ //g")
 
-	if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]]; then
+	if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]]; then
 		unset {C,CPP,CXX,LD}FLAGS
 		
 		echo depends bli part_gpt > grub-core/extra_deps.lst
@@ -82,7 +82,7 @@ if [[ $DISKLABEL == "gpt" ]]; then
 	mkdir -pv /usr/share/fonts/unifont
 	gunzip -c ../$(basename $PKG_UNIFONT) > /usr/share/fonts/unifont/unifont.pcf
 
-	if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]]; then
+	if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]]; then
 		unset {C,CPP,CXX,LD}FLAGS
 		
 		echo depends bli part_gpt > grub-core/extra_deps.lst
@@ -111,6 +111,6 @@ if [[ $DISKLABEL == "gpt" ]]; then
 	# If efivarfs is supported
 	if [[ "$(cat /proc/filesystems | grep efivarfs)" != "" ]]; then 
 		mountpoint /sys/firmware/efi/efivars ||  mount -t efivarfs efivarfs /sys/firmware/efi/efivars
-		[[ $DISK_BOOT != 0 ]] && grub-install --bootloader-id=$OS_ID --recheck
+		[[ $DISK_BOOT != 0 ]] && mkinitramfs -o initrd.img-$KERNELVAR && grub-install --bootloader-id=$OS_ID --recheck
 	fi
 fi

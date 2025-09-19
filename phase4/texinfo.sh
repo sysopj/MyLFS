@@ -1,4 +1,8 @@
 # Texinfo Phase 4
+if [[ "$LFS_VERSION" == "12.4" ]];then
+	sed 's/! $output_file eq/$output_file ne/' -i tp/Texinfo/Convert/*.pm
+fi
+
 ./configure --prefix=/usr
 
 if [[ "$LFS_VERSION" == "11.1" ]];then

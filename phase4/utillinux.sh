@@ -20,7 +20,7 @@ if [[ "$LFS_VERSION" == "11.1" ]] || [[ "$LFS_VERSION" == "11.2" ]]; then
 				--without-systemdsystemunitdir
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] && [[ "$LFSINIT" == "sysvinit" ]]; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] && [[ "$LFSINIT" == "sysvinit" ]]; then
 	./configure --bindir=/usr/bin     \
 				--libdir=/usr/lib     \
 				--runstatedir=/run    \
@@ -41,7 +41,7 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] && [[ "$LFSI
 				--docdir=/usr/share/doc/util-linux-$UTILLINUX_VERSION
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] && [[ "$LFSINIT" == "systemd" ]]; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] && [[ "$LFSINIT" == "systemd" ]]; then
 	./configure --bindir=/usr/bin     \
 				--libdir=/usr/lib     \
 				--runstatedir=/run    \

@@ -106,7 +106,7 @@ if [[ "$LFS_VERSION" == "12.2" ]] && [[ "$MULTILIB" == "true" ]];then
 	rm -v $LFS/usr/lib/lib{bfd,ctf,ctf-nobfd,opcodes,sframe}.{a,la}
 fi
 
-if [[ "$LFS_VERSION" == "12.3" ]] && [[ "$MULTILIB" == "false" ]];then
+if [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] && [[ "$MULTILIB" == "false" ]];then
 	../configure                   \
 		--prefix=/usr              \
 		--build=$(../config.guess) \
@@ -125,7 +125,7 @@ if [[ "$LFS_VERSION" == "12.3" ]] && [[ "$MULTILIB" == "false" ]];then
 	rm -v $LFS/usr/lib/lib{bfd,ctf,ctf-nobfd,opcodes,sframe}.{a,la}
 fi
 
-if [[ "$LFS_VERSION" == "12.3" ]] && [[ "$MULTILIB" == "true" ]];then
+if [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] && [[ "$MULTILIB" == "true" ]];then
 	../configure                   \
 		--prefix=/usr              \
 		--build=$(../config.guess) \

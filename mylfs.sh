@@ -32,6 +32,7 @@ Welcome to the
 											-SystemD support
 											-12.2 support
 											-12.3 support
+											-12.4 support
 
 
 *based on Kyle Glaws MyLFS script on github*
@@ -120,6 +121,8 @@ on the device you specify.
         --env               	Show all variables.
 
         -h|--help               Show this message.
+		
+		--chroot				chroot into your project
 
 EOF
 }
@@ -1091,7 +1094,7 @@ if [[ "$LFS_VERSION" == "11.2" ]];then
     fi
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]];then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]];then
     if [ -h $LFS/dev/shm ]; then
 	  install -v -d -m 1777 $LFS$(realpath /dev/shm)
 	else
@@ -1291,6 +1294,10 @@ function build_package {
     local PKG_NAME=PKG_$([ -n "$NAME_OVERRIDE" ] && echo $NAME_OVERRIDE || echo $NAME | tr a-z A-Z)
 
     local LOG_FILE=$([ $PHASE -eq 5 ] && echo "$EXTENSION/logs/${NAME}.log" || echo "$LOG_DIR/${NAME}_phase${PHASE}.log")
+
+	# If calling extentions directly such as via post_run.sh, $EXTENSION is missing the $PWD and tries to place it in $LFS/$EXTENSION/logs/${NAME}.log
+	$POST_RUN_LOADED && LOG_FILE=$([ $PHASE -eq 5 ] && echo "$PWD/$EXTENSION/logs/${NAME}.log")
+
     local SCRIPT_PATH=$([ $PHASE -eq 5 ] && echo $EXTENSION/scripts/${NAME}.sh || echo ./phase${PHASE}/${NAME}.sh)
 
     if [ "$NAME_OVERRIDE" == "_" ]
@@ -1664,10 +1671,10 @@ function is_multilib_compatible_test {
 	if [[ $(is_multilib_compatible) == "false" ]]; then
 		echo "Error: your system is not multilib enabled."
 		echo "Tested with Debian Bookworm with:"
+		echo "apt install -y g++-multilib binutils-multiarch gcc-multilib"
 		echo "sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="quiet"/GRUB_CMDLINE_LINUX_DEFAULT="syscall.x32=y quiet"/g' /etc/default/grub"
 		echo "sed -i 's/GRUB_CMDLINE_LINUX=""/GRUB_CMDLINE_LINUX="syscall.x32=y"/g' /etc/default/grub"
 		echo "update-grub2 && reboot"
-		echo "apt install -y g++-multilib binutils-multiarch gcc-multilib"
 	else
 		echo "Pass: your system is multilib enabled."
 	fi
@@ -1682,7 +1689,21 @@ function main {
     $INIT && download_packages && init_image && unmount_image && exit
 	$REINIT && mount_image && reinit_image && unmount_image && exit
     $MOUNT && mount_image && exit
-    $UNMOUNT && unmount_image && exit
+	if $DO_CHROOT
+	then
+		mount_image
+		chroot "$LFS" /usr/bin/env \
+						HOME=/root \
+						TERM=$TERM \
+						PS1='(lfs chroot) \u:\w\$ ' \
+						PATH=/usr/bin:/usr/sbin \
+						MAKEFLAGS="-j$(nproc)"      \
+						TESTSUITEFLAGS="-j$(nproc)" \
+						/usr/bin/bash --login +h
+		unmount_image				
+		exit
+	fi
+	$UNMOUNT && unmount_image && exit
     $CLEAN && clean_image && exit
 	$BACKUP && make_backup && exit
 	$RESTORE && do_restore && exit
@@ -1746,6 +1767,10 @@ function main {
     find $LFS/usr -depth -name $LFS_TGT\* | xargs rm -rf
     rm -rf $LFS/home/tester
     sed -i 's/^.*tester.*$//' $LFS/etc/{passwd,group}
+
+	# Install extra extentions such as curl and openssh
+	# 
+	[ -f post_run.sh ] && POST_RUN_LOADED=true && source ./post_run.sh
 
     # unmount and detatch image
     unmount_image
@@ -1819,6 +1844,8 @@ UNMOUNT=false
 CLEAN=false
 BACKUP=false
 RESTORE=false
+DO_CHROOT=false
+POST_RUN_LOADED=false
 
 while [ $# -gt 0 ]; do
   case $1 in
@@ -1933,6 +1960,10 @@ while [ $# -gt 0 ]; do
 	  shift
 	  exit
 	  ;;
+    --chroot)
+      DO_CHROOT=true
+	  shift
+      ;;	 
     *)
       echo "Unknown option $1"
       usage

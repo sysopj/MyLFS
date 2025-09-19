@@ -21,6 +21,6 @@ make install
 
 ln -s flex /usr/bin/lex
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]];then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]];then
 	ln -s flex.1 /usr/share/man/man1/lex.1
 fi

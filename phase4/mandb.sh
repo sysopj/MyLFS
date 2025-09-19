@@ -14,7 +14,7 @@ if [[ "$LFS_VERSION" == "12.2" ]]; then
             --with-systemdsystemunitdir=
 fi
 
-if [[ "$LFS_VERSION" == "12.3" ]]; then
+if [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]]; then
 ./configure --prefix=/usr                         \
             --docdir=/usr/share/doc/man-db-$MANDB_VERSION \
             --sysconfdir=/etc                     \

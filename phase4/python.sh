@@ -25,6 +25,14 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]]; then
 				--enable-optimizations
 fi
 
+if [[ "$LFS_VERSION" == "12.4" ]]; then
+	./configure --prefix=/usr          \
+				--enable-shared        \
+				--with-system-expat    \
+				--enable-optimizations \
+				--without-static-libpython
+fi
+
 make
 
 if $RUN_TESTS
@@ -59,7 +67,7 @@ if [[ "$LFS_VERSION" == "12.2" ]]; then
 		/usr/share/doc/python-$PYTHON_VERSION/html
 fi
 
-if [[ "$LFS_VERSION" == "12.3" ]]; then		
+if [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]]; then		
 	tar --strip-components=1  \
 		--no-same-owner       \
 		--no-same-permissions \

@@ -14,7 +14,7 @@ if [[ "$LFS_VERSION" == "12.2" ]]; then
 				bash_cv_strtold_broken=no
 fi
 
-if [[ "$LFS_VERSION" == "12.3" ]]; then
+if [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]]; then
 	./configure --prefix=/usr                   \
 				--build=$(sh support/config.guess) \
 				--host=$LFS_TGT                 \

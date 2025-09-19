@@ -24,7 +24,7 @@ if [[ "$LFS_VERSION" == "12.2" ]]; then
 	make install
 fi
 
-if [[ "$LFS_VERSION" == "12.3" ]]; then
+if [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]]; then
 	mkdir build
 	cd    build
 

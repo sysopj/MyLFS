@@ -11,7 +11,7 @@ if [[ "$LFS_VERSION" == "12.2" ]]; then
 	autoreconf -fiv
 fi
 
-if [[ "$LFS_VERSION" == "12.3" ]]; then
+if [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]]; then
 	autoreconf -fv
 	automake -af
 fi

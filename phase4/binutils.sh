@@ -62,10 +62,36 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] && [[ "$MULT
 				 --enable-default-hash-style=gnu
 fi
 
+if [[ "$LFS_VERSION" == "12.4" ]] && [[ "$MULTILIB" == "false" ]]; then
+	../configure --prefix=/usr       \
+				 --sysconfdir=/etc   \
+				 --enable-ld=default \
+				 --enable-plugins    \
+				 --enable-shared     \
+				 --disable-werror    \
+				 --enable-64-bit-bfd \
+				 --enable-new-dtags  \
+				 --with-system-zlib  \
+				 --enable-default-hash-style=gnu
+fi
+
 if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] && [[ "$MULTILIB" == "true" ]]; then
 	../configure --prefix=/usr       \
 				 --sysconfdir=/etc   \
 				 --enable-gold       \
+				 --enable-ld=default \
+				 --enable-plugins    \
+				 --enable-shared     \
+				 --disable-werror    \
+				 --enable-64-bit-bfd \
+				 --with-system-zlib  \
+				 --enable-default-hash-style=gnu \
+				 --enable-multilib
+fi
+
+if [[ "$LFS_VERSION" == "12.4" ]] && [[ "$MULTILIB" == "true" ]]; then
+	../configure --prefix=/usr       \
+				 --sysconfdir=/etc   \
 				 --enable-ld=default \
 				 --enable-plugins    \
 				 --enable-shared     \
@@ -94,4 +120,8 @@ fi
 
 if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]];then
 	rm -fv /usr/lib/lib{bfd,ctf,ctf-nobfd,gprofng,opcodes,sframe}.a
+fi
+
+if [[ "$LFS_VERSION" == "12.4" ]];then
+	rm -rfv /usr/lib/lib{bfd,ctf,ctf-nobfd,gprofng,opcodes,sframe}.a /usr/share/doc/gprofng/
 fi

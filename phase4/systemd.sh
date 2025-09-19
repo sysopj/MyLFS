@@ -30,7 +30,7 @@ meson --prefix=/usr                 \
       ..
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]]; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]]; then
 meson setup ..                \
       --prefix=/usr           \
       --buildtype=release     \
@@ -96,6 +96,10 @@ cat > /etc/systemd/coredump.conf.d/maxuse.conf << EOF
 MaxUse=5G
 EOF
 
+if [[ "$LFS_VERSION" == "12.4" ]]; then
+	OPTIONALS="-D dbus=disabled"
+fi
+
 if [[ "$MULTILIB" == "true" ]]; then
 	#32bit
 	rm -rf *
@@ -117,7 +121,8 @@ if [[ "$MULTILIB" == "true" ]]; then
 		  -D homed=disabled              \
 		  -D userdb=false                \
 		  -D man=disabled                \
-		  -D mode=release 
+		  -D mode=release                \
+		  $OPTIONALS
 	
 	LANG=en_US.UTF-8 ninja
 	
@@ -147,7 +152,8 @@ if [[ "$MULTILIB" == "true" ]]; then
 		  -D homed=false                 \
 		  -D userdb=false                \
 		  -D man=disabled                \
-		  -D mode=release 
+		  -D mode=release                \
+		  $OPTIONALS 
 	
 	LANG=en_US.UTF-8 ninja
 	
@@ -157,3 +163,5 @@ if [[ "$MULTILIB" == "true" ]]; then
 	cp -v  DESTDIR/usr/libx32/pkgconfig/* /usr/libx32/pkgconfig/
 	rm -rf DESTDIR
 fi	
+
+unset OPTIONALS

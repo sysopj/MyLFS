@@ -20,6 +20,11 @@ else
 	esac
 fi
 
+if [[ "$LFS_VERSION" == "12.4" ]] && [[ "$MULTILIB" == "true" ]]; then
+	sed '/STACK_REALIGN_DEFAULT/s/0/(!TARGET_64BIT \&\& TARGET_SSE)/' \
+      -i gcc/config/i386/i386.h
+fi
+
 mkdir build
 cd build
 
@@ -36,7 +41,7 @@ if [[ "$LFS_VERSION" == "11.1" ]] || [[ "$LFS_VERSION" == "11.2" ]]; then
 	make
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] && [[ "$MULTILIB" == "false" ]]; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] && [[ "$MULTILIB" == "false" ]]; then
 	../configure --prefix=/usr            \
 				 LD=ld                    \
 				 --enable-languages=c,c++ \
@@ -49,7 +54,7 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] && [[ "$MULT
 				 --with-system-zlib
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] && [[ "$MULTILIB" == "true" ]]; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] && [[ "$MULTILIB" == "true" ]]; then
 	mlist=m64,m32,mx32
 	../configure --prefix=/usr               \
 				 LD=ld                       \
@@ -64,7 +69,7 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] && [[ "$MULT
 				 --with-system-zlib
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]]; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]]; then
 	make
 	
 	ulimit -s -H unlimited
@@ -98,9 +103,11 @@ chown -R root:root \
     /usr/lib/gcc/$(gcc -dumpmachine)/$GCC_VERSION/include{,-fixed}
 #   /usr/lib/gcc/*linux-gnu/$GCC_VERSION/include{,-fixed}
 
+[ -h /usr/lib/cpp ] && unlink /usr/lib/cpp
 ln -sr /usr/bin/cpp /usr/lib
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]]; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]]; then
+	[ -h //usr/share/man/man1/cc.1 ] && unlink /usr/share/man/man1/cc.1
 	ln -s gcc.1 /usr/share/man/man1/cc.1
 fi
 

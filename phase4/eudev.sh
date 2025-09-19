@@ -41,7 +41,7 @@ user.* -/var/log/user.log
 EOF
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]]; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]]; then
 	sed -i -e 's/GROUP="render"/GROUP="video"/' \
 		   -e 's/GROUP="sgx", //' rules.d/50-udev-default.rules.in
 	sed '/systemd-sysctl/s/^/#/' -i rules.d/99-systemd.rules.in
@@ -55,7 +55,7 @@ if [[ "$LFS_VERSION" == "12.3" ]]; then
 	sed -e '/NETWORK_DIRS/s/systemd/udev/' -i src/libsystemd/sd-network/network-util.h
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]]; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]]; then
 	mkdir -p build
 	cd       build
 
@@ -119,7 +119,7 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]]; then
 	
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] && [[ "$MULTILIB" == "true" ]]; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] && [[ "$MULTILIB" == "true" ]]; then
 	#32 bit
 	rm -rf *
 	PKG_CONFIG_PATH="/usr/lib32/pkgconfig" \

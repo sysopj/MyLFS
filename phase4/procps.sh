@@ -16,7 +16,7 @@ if [[ "$LFSINIT" == "systemd" ]] && [[ "$LFS_VERSION" == "12.2" ]]; then
 				--with-systemd
 fi
 
-if [[ "$LFSINIT" == "systemd" ]] && [[ "$LFS_VERSION" == "12.3" ]]; then
+if [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] && [[ "$LFSINIT" == "systemd" ]]; then
 	./configure --prefix=/usr                            \
 				--docdir=/usr/share/doc/procps-ng-$PROCPS_VERSION  \
 				--disable-static                         \
@@ -33,7 +33,7 @@ if [[ "$LFSINIT" == "systemd" ]] && [[ "$LFS_VERSION" == "12.2" ]]; then
 	make src_w_LDADD='$(LDADD) -lsystemd'
 fi
 
-if [[ "$LFSINIT" == "systemd" ]] && [[ "$LFS_VERSION" == "12.3" ]]; then
+if [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] && [[ "$LFSINIT" == "systemd" ]]; then
 	make
 fi
 
@@ -43,7 +43,7 @@ if [[ "$LFS_VERSION" == "11.1" ]] || [[ "$LFS_VERSION" == "11.2" ]] && $RUN_TEST
     set -e
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] && $RUN_TESTS; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] && $RUN_TESTS; then
     set +e
     chown -R tester .
     su tester -c "PATH=$PATH make check"

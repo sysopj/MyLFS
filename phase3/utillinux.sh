@@ -22,11 +22,11 @@ if [[ "$LFS_VERSION" == "11.1" ]] || [[ "$LFS_VERSION" == "11.2" ]];then
 	make install
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]]; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]]; then
 	mkdir -pv /var/lib/hwclock
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] && [[ "$MULTILIB" == "false" ]]; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] && [[ "$MULTILIB" == "false" ]]; then
 	./configure --libdir=/usr/lib     \
 				--runstatedir=/run    \
 				--disable-chfn-chsh   \
@@ -46,7 +46,7 @@ if [[ "$LFS_VERSION" == "12.2" ]] && [[ "$MULTILIB" == "false" ]]; then
 	make install
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] && [[ "$MULTILIB" == "true" ]]; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] && [[ "$MULTILIB" == "true" ]]; then
 	#X64 bit
 	./configure --libdir=/usr/lib     \
             --runstatedir=/run    \

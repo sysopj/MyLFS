@@ -24,7 +24,7 @@ if [[ "$LFS_VERSION" == "11.2" ]]; then
 				--with-pkg-config-libdir=/usr/lib/pkgconfig
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]]; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]]; then
 	./configure --prefix=/usr           \
 				--mandir=/usr/share/man \
 				--with-shared           \
@@ -46,7 +46,7 @@ if [[ "$LFS_VERSION" == "11.2" ]]; then
 		-i dest/usr/include/curses.h
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]]; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]]; then
 	sed -e 's/^#if.*XOPEN.*$/#if 1/' \
 		-i dest/usr/include/curses.h
 fi
@@ -64,7 +64,7 @@ if [[ "$LFS_VERSION" == "11.1" ]] || [[ "$LFS_VERSION" == "11.2" ]]; then
 	echo "INPUT(-lncursesw)" > /usr/lib/libcursesw.so
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]]; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]]; then
 	for lib in ncurses form panel menu ; do
 		ln -sfv lib${lib}w.so /usr/lib/lib${lib}.so
 		ln -sfv ${lib}w.pc    /usr/lib/pkgconfig/${lib}.pc
@@ -88,7 +88,7 @@ if [[ "$LFS_VERSION" == "11.2" ]]; then
 	cp -av lib/lib*.so.5* /usr/lib
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]]; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]]; then
 	make distclean
 	./configure --prefix=/usr     \
 				--with-shared     \

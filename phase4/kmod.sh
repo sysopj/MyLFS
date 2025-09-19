@@ -40,7 +40,18 @@ if [[ "$LFS_VERSION" == "12.3" ]]; then
 	ninja install
 fi
 
+if [[ "$LFS_VERSION" == "12.4" ]]; then
+	mkdir -p build
+	cd       build
 
+	meson setup --prefix=/usr ..    \
+            --buildtype=release \
+            -D manpages=false
+	
+	ninja
+	
+	ninja install
+fi
 
 if [[ "$LFS_VERSION" == "11.1" ]] || [[ "$LFS_VERSION" == "11.2" ]]; then
 	for target in depmod insmod modinfo modprobe rmmod; do
@@ -136,6 +147,49 @@ if [[ "$LFS_VERSION" == "12.3" ]] && [[ "$MULTILIB" == "true" ]]; then
 	CXX="g++ -mx32"                         \
 	meson setup --prefix=/usr ..    \
 				--sbindir=/usr/sbin \
+				--buildtype=release \
+				--libdir=/usr/libx32 \
+				-D manpages=false
+
+	ninja
+
+	DESTDIR=$PWD/DESTDIR ninja install
+	cp -Rv DESTDIR/usr/libx32/* /usr/libx32
+	rm -rf DESTDIR
+fi
+
+if [[ "$LFS_VERSION" == "12.4" ]] && [[ "$MULTILIB" == "true" ]]; then
+	#x32 bit
+	cd .. &&
+	rm -rf build &&
+	mkdir build &&
+	cd build
+
+	PKG_CONFIG_PATH="/usr/lib32/pkgconfig" \
+	CC="gcc -m32 -march=i686"              \
+	CXX="g++ -m32 -march=i686"             \
+	meson setup --prefix=/usr ..    \
+				--sbindir=/usr/sbin \
+				--buildtype=release \
+				--libdir=/usr/lib32 \
+				-D manpages=false
+
+	ninja
+
+	DESTDIR=$PWD/DESTDIR ninja install
+	cp -Rv DESTDIR/usr/lib32/* /usr/lib32
+	rm -rf DESTDIR
+	
+	#32 bit
+	cd .. &&
+	rm -rf build &&
+	mkdir build &&
+	cd build
+
+	PKG_CONFIG_PATH="/usr/libx32/pkgconfig" \
+	CC="gcc -mx32"                          \
+	CXX="g++ -mx32"                         \
+	meson setup --prefix=/usr ..    \
 				--buildtype=release \
 				--libdir=/usr/libx32 \
 				-D manpages=false

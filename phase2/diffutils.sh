@@ -10,6 +10,13 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]];then
 				--build=$(./build-aux/config.guess)
 fi
 
+if [[ "$LFS_VERSION" == "12.4" ]];then
+	./configure --prefix=/usr   \
+				--host=$LFS_TGT \
+				gl_cv_func_strcasecmp_works=y \
+				--build=$(./build-aux/config.guess)
+fi
+
 make
 make DESTDIR=$LFS install
 
