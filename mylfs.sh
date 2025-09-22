@@ -624,7 +624,7 @@ function do_restore {
 		pushd $LOG_DIR &> /dev/null
 			echo "Restoring Logs"
 			#echo "tar -xzf $MYLFS_ROOT/$TAR_FILE_LOG ."
-			tar -xzf $MYLFS_ROOT/$TAR_FILE_LOG .
+			[ -f $MYLFS_ROOT/$TAR_FILE_LOG ] && tar -xzf $MYLFS_ROOT/$TAR_FILE_LOG . || echo "Logs Backup Not Found, Skipping"
 		popd &> /dev/null
 	fi
 	
