@@ -8,6 +8,18 @@ set -e
 
 #DSL Welcome
 function welcome() {
+	cols=$(tput cols)
+	#echo "Termianl columns: $cols"
+	local TEST=false
+	
+	[[ $cols -gt "131" ]] && welcome1 && TEST=true
+	[[ $TEST == false ]] && [[ $cols -gt "100" ]] && welcome2 && TEST=true
+	[[ $TEST == false ]] && welcome3
+	
+	echo
+}
+
+function welcome1() {
 	#http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=DillonSocietyLabs
 	clear
 	local response
@@ -22,6 +34,93 @@ Welcome to the
 ██║  ██║██║██║     ██║     ██║   ██║██║╚██╗██║╚════██║██║   ██║██║     ██║██╔══╝     ██║     ╚██╔╝  ██║     ██╔══██║██╔══██╗╚════██║
 ██████╔╝██║███████╗███████╗╚██████╔╝██║ ╚████║███████║╚██████╔╝╚██████╗██║███████╗   ██║      ██║   ███████╗██║  ██║██████╔╝███████║
 ╚═════╝ ╚═╝╚══════╝╚══════╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝ ╚═════╝  ╚═════╝╚═╝╚══════╝   ╚═╝      ╚═╝   ╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝
+                                                                                                                                    
+
+
+
+                                        Linux From Scratch Build Script.
+											-x86_64 Multilib support added.
+											-SysVinit support
+											-SystemD support
+											-12.2 support
+											-12.3 support
+											-12.4 support
+
+
+*based on Kyle Glaws MyLFS script on github*
+      
+EOF
+}
+
+function welcome2() {
+	#http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=DillonSocietyLabs
+	clear
+	local response
+	cat <<EOF
+Welcome to the
+
+
+
+██████╗ ██╗██╗     ██╗      ██████╗ ███╗   ██╗███████╗ ██████╗  ██████╗██╗███████╗████████╗██╗   ██╗
+██╔══██╗██║██║     ██║     ██╔═══██╗████╗  ██║██╔════╝██╔═══██╗██╔════╝██║██╔════╝╚══██╔══╝╚██╗ ██╔╝
+██║  ██║██║██║     ██║     ██║   ██║██╔██╗ ██║███████╗██║   ██║██║     ██║█████╗     ██║    ╚████╔╝ 
+██║  ██║██║██║     ██║     ██║   ██║██║╚██╗██║╚════██║██║   ██║██║     ██║██╔══╝     ██║     ╚██╔╝  
+██████╔╝██║███████╗███████╗╚██████╔╝██║ ╚████║███████║╚██████╔╝╚██████╗██║███████╗   ██║      ██║   
+╚═════╝ ╚═╝╚══════╝╚══════╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝ ╚═════╝  ╚═════╝╚═╝╚══════╝   ╚═╝      ╚═╝   
+
+██╗      █████╗ ██████╗ ███████╗
+██║     ██╔══██╗██╔══██╗██╔════╝
+██║     ███████║██████╔╝███████╗
+██║     ██╔══██║██╔══██╗╚════██║
+███████╗██║  ██║██████╔╝███████║
+╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝						
+                                                                                                                                    
+
+
+
+                                        Linux From Scratch Build Script.
+											-x86_64 Multilib support added.
+											-SysVinit support
+											-SystemD support
+											-12.2 support
+											-12.3 support
+											-12.4 support
+
+
+*based on Kyle Glaws MyLFS script on github*
+    
+EOF
+}
+
+function welcome3() {
+	#http://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=DillonSocietyLabs
+	clear
+	local response
+	cat <<EOF
+Welcome to the
+
+
+
+██████╗ ██╗██╗     ██╗      ██████╗ ███╗   ██╗
+██╔══██╗██║██║     ██║     ██╔═══██╗████╗  ██║
+██║  ██║██║██║     ██║     ██║   ██║██╔██╗ ██║
+██║  ██║██║██║     ██║     ██║   ██║██║╚██╗██║ 
+██████╔╝██║███████╗███████╗╚██████╔╝██║ ╚████║ 
+╚═════╝ ╚═╝╚══════╝╚══════╝ ╚═════╝ ╚═╝  ╚═══╝  
+
+███████╗ ██████╗  ██████╗██╗███████╗████████╗██╗   ██╗
+██╔════╝██╔═══██╗██╔════╝██║██╔════╝╚══██╔══╝╚██╗ ██╔╝
+███████╗██║   ██║██║     ██║█████╗     ██║    ╚████╔╝ 
+╚════██║██║   ██║██║     ██║██╔══╝     ██║     ╚██╔╝ 
+███████║╚██████╔╝╚██████╗██║███████╗   ██║      ██║  
+╚══════╝ ╚═════╝  ╚═════╝╚═╝╚══════╝   ╚═╝      ╚═╝ 
+
+██╗      █████╗ ██████╗ ███████╗
+██║     ██╔══██╗██╔══██╗██╔════╝
+██║     ███████║██████╔╝███████╗
+██║     ██╔══██║██╔══██╗╚════██║
+███████╗██║  ██║██████╔╝███████║
+╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝						
                                                                                                                                     
 
 
@@ -68,7 +167,7 @@ on the device you specify.
                                 It is recommended that you run this before proceeding
                                 with the rest of the build.
 
-		--multilib              Test if your system is confiured for multilib development
+        --multilib              Test if your system is confiured for multilib development
 		
         -b|--build-all          Run the entire script from beginning to end.
 
@@ -122,7 +221,7 @@ on the device you specify.
 
         -h|--help               Show this message.
 		
-		--chroot				chroot into your project
+        --chroot				chroot into your project
 
 EOF
 }
@@ -221,23 +320,28 @@ function format_disk {
 		DISK_SIZE=$(lsblk -J --nodep $INSTALL_TGT | grep size | cut -d ":" -f 2 | cut -d "\"" -f 2 | cut -d "G" -f 1)
 		if [[ $DISK_SWAP != "false" ]]; then
 			# Get Swap size in Bytes
-			DISK_SWAP_B=$(($DISK_SWAP*1024*1024))
+			echo DISK_SWAP=$DISK_SWAP
+			#DISK_SWAP_B=$(($DISK_SWAP*1024*1024))
 
 			# Convert to G with a tenths place
-			DISK_SWAP_G1=$(echo $DISK_SWAP_B | cut -c 1)
-			DISK_SWAP_G2=$(echo $DISK_SWAP_B | cut -c 2)		
-			DISK_SWAP_G=$DISK_SWAP_G1.$DISK_SWAP_G2
+			#DISK_SWAP_G1=$(echo $DISK_SWAP_B | cut -c 1)
+			#DISK_SWAP_G2=$(echo $DISK_SWAP_B | cut -c 2)		
+			#DISK_SWAP_G=$DISK_SWAP_G1.$DISK_SWAP_G2
 			
 			[[ $FIRMWARE == "UEFI" ]] && DISK_ROOT=$(subtract $DISK_SIZE $DISK_BOOT)
 			[[ $FIRMWARE == "UEFI" ]] && DISK_ROOT=$(subtract $DISK_SIZE $DISK_EFI)
 			
 			# Set new disk root size to the tenths place
-			DISK_ROOT=$(subtract $DISK_SIZE $DISK_SWAP_G)
+			DISK_ROOT=$(subtract $DISK_SIZE $DISK_SWAP)
 			
 			[[ $FIRMWARE == "UEFI" ]] && DISK_ROOT=$(subtract $DISK_ROOT $DISK_BOOT)
 			[[ $FIRMWARE == "UEFI" ]] && DISK_ROOT=$(subtract $DISK_ROOT $DISK_EFI)
 			
 			#DISK_ROOT=$(subtract $DISK_SIZE $DISK_SWAP) # results in a swap short .2
+			
+			#If there is a decimanl, the G is not added.
+			DISK_ROOT=$( echo $DISK_ROOT | cut -d \. -f 1)
+			#echo DISK_ROOT=$DISK_ROOT
 			
 			# Generate new FDISK_INSTR
 			FDISK_PARAM
@@ -247,6 +351,8 @@ function format_disk {
 		# remove spaces and comments
 		#FDISK_INSTR=$(echo "$FDISK_INSTR" | sed 's/ *#.*//')
 		FDISK_INSTR=$(echo "$FDISK_INSTR" | sed 's/\s*\([\+0-9a-zA-Z]*\).*/\1/')
+		
+		echo FDISK_INSTR=$FDISK_INSTR
 		
 		if ! echo "$FDISK_INSTR" | fdisk $INSTALL_TGT |& { $VERBOSE && cat || cat > /dev/null; }
 		then
@@ -1770,7 +1876,7 @@ function main {
 
 	# Install extra extentions such as curl and openssh
 	# 
-	[ -f post_run.sh ] && POST_RUN_LOADED=true && source ./post_run.sh
+	[ -f post_run.sh ] && [ -z "$EXTENSION" ] && POST_RUN_LOADED=true && source ./post_run.sh
 
     # unmount and detatch image
     unmount_image

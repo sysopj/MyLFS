@@ -42,31 +42,33 @@ if [[ "$LFS_VERSION" == "11.1" ]] || [[ "$LFS_VERSION" == "11.2" ]]; then
 fi
 
 if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] && [[ "$MULTILIB" == "false" ]]; then
-	../configure --prefix=/usr            \
-				 LD=ld                    \
-				 --enable-languages=c,c++ \
-				 --enable-default-pie     \
-				 --enable-default-ssp     \
-				 --enable-host-pie        \
-				 --disable-multilib       \
-				 --disable-bootstrap      \
-				 --disable-fixincludes    \
-				 --with-system-zlib
+	../configure --prefix=/usr           	\
+				LD=ld                   	\
+				--enable-languages=c,c++	\
+				--enable-default-pie    	\
+				--enable-default-ssp		\
+				--enable-libssp				\
+				--enable-host-pie       	\
+				--disable-multilib      	\
+				--disable-bootstrap     	\
+				--disable-fixincludes   	\
+				--with-system-zlib
 fi
 
 if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] && [[ "$MULTILIB" == "true" ]]; then
 	mlist=m64,m32,mx32
-	../configure --prefix=/usr               \
-				 LD=ld                       \
-				 --enable-languages=c,c++    \
-				 --enable-default-pie        \
-				 --enable-default-ssp        \
-				 --enable-host-pie           \
-				 --enable-multilib           \
-				 --with-multilib-list=$mlist \
-				 --disable-bootstrap         \
-				 --disable-fixincludes       \
-				 --with-system-zlib
+	../configure --prefix=/usr              \
+				LD=ld                       \
+				--enable-languages=c,c++    \
+				--enable-default-pie        \
+				--enable-default-ssp        \
+				--enable-libssp				\
+				--enable-host-pie           \
+				--enable-multilib           \
+				--with-multilib-list=$mlist \
+				--disable-bootstrap         \
+				--disable-fixincludes       \
+				--with-system-zlib
 fi
 
 if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]]; then

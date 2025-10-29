@@ -3,3 +3,24 @@ build_extension
 
 EXTENSION=extension_openssh
 build_extension 
+
+EXTENSION=extension_pv
+build_extension 
+
+EXTENSION=extension_dhcpcd
+build_extension 
+
+EXTENSION=extension_wireless
+build_extension 
+
+EXTENSION=extension_pciutils
+build_extension
+
+EXTENSION=extension_usbutils
+build_extension
+
+EXTENSION=extension_linux_firmware
+build_extension
+
+EXTENSION=extension_remove_sources
+build_extension 

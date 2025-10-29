@@ -255,8 +255,8 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_
 	
 	#echo "/usr/lib32" >> /etc/ld.so.conf
 	echo "# Legacy biarch compatibility support" > /etc/ld.so.conf.d/zz_i386-biarch-compat.conf
-	echo "/libx32" >> /etc/ld.so.conf.d/zz_i386-biarch-compat.conf
-	echo "/usr/libx32" >> /etc/ld.so.conf.d/zz_i386-biarch-compat.conf
+	echo "/lib32" >> /etc/ld.so.conf.d/zz_i386-biarch-compat.conf
+	echo "/usr/lib32" >> /etc/ld.so.conf.d/zz_i386-biarch-compat.conf
 
 	#x32 bit
 	rm -rf ./*
