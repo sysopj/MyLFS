@@ -4,10 +4,32 @@ CONFIGFILE=config-$KERNELVERS
 
 make mrproper
 
+
+if [[ $(cat arch/x86/kernel/process.c | grep "EXPORT_SYMBOL(__stack_chk_guard);") == "" ]]; then
+cat << EOF > ./process.patch
+diff -ruN orig/arch/x86/kernel/process.c new/arch/x86/kernel/process.c
+--- orig/arch/x86/kernel/process.c      2025-11-05 23:57:08.410119082 -0500
++++ new/arch/x86/kernel/process.c       2025-11-05 23:56:56.694142634 -0500
+@@ -57,6 +57,10 @@
+
+ #include "process.h"
+
++#if defined(CONFIG_STACKPROTECTOR) && !defined(CONFIG_STACKPROTECTOR_PER_TASK)
++unsigned long __stack_chk_guard __read_mostly;
++EXPORT_SYMBOL(__stack_chk_guard);
++#endif
++
+ /*
+  * per-CPU TSS segments. Threads are completely 'soft' on Linux,
+  * no more per-task TSS's. The TSS size is kept cacheline-aligned
+EOF
+patch -Np1 -i process.patch
+fi
+
 if [ -f /boot/$CONFIGFILE ]
 then
-    cp /boot/$CONFIGFILE ./.config
-    make olddefconfig
+    cp /boot/$CONFIGFILE .config
+    make #olddefconfig
 else
     make defconfig
 
@@ -19,9 +41,10 @@ else
 	fi
 fi
 
-yes "" | make
+#yes "" | make
 
 make modules_install
+#make headers_install
 
 cp ./.config /boot/$CONFIGFILE
 cp arch/x86_64/boot/bzImage /boot/vmlinuz-$KERNELVERS

@@ -24,3 +24,5 @@ build_extension
 
 EXTENSION=extension_remove_sources
 build_extension 
+
+[ -d $LFS/sources ] && rm -r $LFS/sources

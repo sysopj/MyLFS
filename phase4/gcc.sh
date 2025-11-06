@@ -69,6 +69,10 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_
 				--disable-bootstrap         \
 				--disable-fixincludes       \
 				--with-system-zlib
+	# Side effect of --enable-libssp can cause the following error, followed by the fix of effected .configure instructions.
+	# __stack_chk_guard undefined
+	# CC="gcc -W -lssp"  CXX="g++"      \
+	# ./configure (followed with desired options)
 fi
 
 if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]]; then
