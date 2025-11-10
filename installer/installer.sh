@@ -504,10 +504,11 @@ function do_restore {
     sed -Ei "s/root=PARTUUID=[0-9a-z-]+/root=PARTUUID=${LFSPARTUUID}/" $INSTALL_MOUNT/boot/grub/grub.cfg	
 	
 	[ $DISK_BOOT != 0 ] && sed -Ei "s/search --no-floppy --label DSLsq_ROOT --set=root/search --no-floppy --label $LFSBOOTLABEL --set=root/" $INSTALL_MOUNT/boot/grub/grub.cfg	
+	sed -i "s/DSLSQ_BOOT/$LFSBOOTLABEL/" $INSTALL_MOUNT/boot/grub/grub.cfg
 	
 	echo "Fixing /etc/fstab"
 	sed -i "s/DSLsq_ROOT/$LFSROOTLABEL/"	$INSTALL_MOUNT/etc/fstab
-	sed -i "s/DSL2_BOOT/$LFSBOOTLABEL/"		$INSTALL_MOUNT/etc/fstab
+	sed -i "s/DSLSQ_BOOT/$LFSBOOTLABEL/"	$INSTALL_MOUNT/etc/fstab
 	sed -i "s/DSLsq_EFI/$LFSEFILABEL/"		$INSTALL_MOUNT/etc/fstab
 	sed -i "s/DSLsq_SWAP/$LFSSWAPLABEL/"	$INSTALL_MOUNT/etc/fstab
 
@@ -689,13 +690,21 @@ function install_image {
 	fi
 	
     if [[ $FIRMWARE == "UEFI" ]] || [[ $FIRMWARE == "uefi" ]]; then
-		local GRUB_CMD="grub-install $GRUB_TARGET --target=x86_64-efi --removable"
+		#$VERBOSE && echo 'local GRUB_CMD="grub-install $GRUB_TARGET --target=x86_64-efi --removable"'
+		local GRUB_CMD="grub-install --target=x86_64-efi --removable"
 		$VERBOSE && echo "Installing GRUB efi. This may take a few minutes... " #|| echo -n "Installing GRUB. This may take a few minutes... "
 		chroot $INSTALL_MOUNT /usr/bin/bash -c "$GRUB_CMD" |& cat #{ $VERBOSE && cat || cat > /dev/null; }
-		source $INSTALL_MOUNT/etc/os-release # For ID
-		local GRUB_CMD="grub-install $GRUB_TARGET --bootloader-id=$ID --recheck"
-		$VERBOSE && echo "Installing GRUB boot. This may take a few minutes... " #|| echo -n "Installing GRUB. This may take a few minutes... "
-		chroot $INSTALL_MOUNT /usr/bin/bash -c "$GRUB_CMD" |& cat #{ $VERBOSE && cat || cat > /dev/null; }
+		
+		# If efivarfs is supported
+		if [ -f $INSTALL_MOUNT/proc/filesystems ] && [[ "$(cat $INSTALL_MOUNT/proc/filesystems | grep efivarfs)" != "" ]]; then 
+			mountpoint $INSTALL_MOUNT/sys/firmware/efi/efivars || mount -t efivarfs efivarfs $INSTALL_MOUNT/sys/firmware/efi/efivars
+			if [[ $DISK_BOOT != 0 ]]; then
+				source $INSTALL_MOUNT/etc/os-release # For ID
+				local GRUB_CMD="grub-install --bootloader-id=$ID --recheck"
+				$VERBOSE && echo "Installing GRUB boot. This may take a few minutes... " #|| echo -n "Installing GRUB. This may take a few minutes... "
+				chroot $INSTALL_MOUNT /usr/bin/bash -c "$GRUB_CMD" |& cat #{ $VERBOSE && cat || cat > /dev/null; }
+			fi
+		fi
 	fi
 
     echo "Finished Installing Grub."

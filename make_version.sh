@@ -2036,7 +2036,7 @@ insmod ext2
 
 menuentry "$GRUB_ENTRY" {
   search --no-floppy --label $LFSBOOTLABEL --set=root
-  linux   /boot/vmlinuz-$KERNELVERS rootwait root=PARTUUID=$LFSPARTUUID ro
+  linux   /boot/vmlinuz-$KERNELVERS rootwait root=PARTUUID=$LFSPARTUUID ro rootdelay=7
 EOF
 [ $DISK_BOOT -ne 0 ] && echo "  initrd /initrd.img-$KERNELVERS" >> ./templates/boot__grub__grub.cfg
 cat << "EOF" >> ./templates/boot__grub__grub.cfg

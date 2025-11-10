@@ -1,6 +1,8 @@
 # GCC Phase 4
 GCC_VERSION=$((basename $PKG_GCC .tar.xz) | cut -d "-" -f 2)
 
+[[ LIBSSP_SUPPORT == true ]] && LIBSSP_EN="--enable-libssp" || LIBSSP_EN=""
+
 if [[ "$LFS_VERSION" == "11.1" ]]; then
 	sed -e '/static.*SIGSTKSZ/d' \
 		-e 's/return kAltStackSize/return SIGSTKSZ * 4/' \
@@ -41,13 +43,14 @@ if [[ "$LFS_VERSION" == "11.1" ]] || [[ "$LFS_VERSION" == "11.2" ]]; then
 	make
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] && [[ "$MULTILIB" == "false" ]]; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || \
+[[ "$LFS_VERSION" == "12.4" ]] && [[ "$MULTILIB" == "false" ]]; then
 	../configure --prefix=/usr           	\
 				LD=ld                   	\
 				--enable-languages=c,c++	\
 				--enable-default-pie    	\
 				--enable-default-ssp		\
-				--enable-libssp				\
+				$LIBSSP_EN					\
 				--enable-host-pie       	\
 				--disable-multilib      	\
 				--disable-bootstrap     	\
@@ -55,27 +58,35 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_
 				--with-system-zlib
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] && [[ "$MULTILIB" == "true" ]]; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || \
+[[ "$LFS_VERSION" == "12.4" ]] && [[ "$MULTILIB" == "true" ]]; then
+
+	[ ! -f /usr/include/c++/${GCC_VERSION}/bits/c++config.h ] && \
+		cp -i /usr/include/c++/${GCC_VERSION}/${LFS_TGT}/bits/* \
+		/usr/include/c++/${GCC_VERSION}/bits/
+		
 	mlist=m64,m32,mx32
 	../configure --prefix=/usr              \
 				LD=ld                       \
 				--enable-languages=c,c++    \
 				--enable-default-pie        \
 				--enable-default-ssp        \
-				--enable-libssp				\
+				$LIBSSP_EN					\
 				--enable-host-pie           \
 				--enable-multilib           \
 				--with-multilib-list=$mlist \
 				--disable-bootstrap         \
 				--disable-fixincludes       \
 				--with-system-zlib
-	# Side effect of --enable-libssp can cause the following error, followed by the fix of effected .configure instructions.
+	# Side effect of --enable-libssp can cause the following error, followed 
+	# by the fix of effected .configure instructions.
 	# __stack_chk_guard undefined
 	# CC="gcc -W -lssp"  CXX="g++"      \
 	# ./configure (followed with desired options)
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]]; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || \
+[[ "$LFS_VERSION" == "12.4" ]]; then
 	make
 	
 	ulimit -s -H unlimited
@@ -112,7 +123,8 @@ chown -R root:root \
 [ -h /usr/lib/cpp ] && unlink /usr/lib/cpp
 ln -sr /usr/bin/cpp /usr/lib
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]]; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || \
+[[ "$LFS_VERSION" == "12.4" ]]; then
 	[ -h //usr/share/man/man1/cc.1 ] && unlink /usr/share/man/man1/cc.1
 	ln -s gcc.1 /usr/share/man/man1/cc.1
 fi

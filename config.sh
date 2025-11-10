@@ -64,8 +64,10 @@ export BZIMAGE=vmlinuz-$KERNELVERS
 
 # Optional Settings
 export CRACKLIB_SUPPORT=false
-export PAPER_SIZE=letter
-#export PAPER_SIZE=A4
+export PAPER_SIZE=letter			# letter, A4
+
+# Experimental
+export LIBSSP_SUPPORT=false
 #export BUILD_PRECOMPILED=false
 
 # Virtual Box Settings

@@ -644,25 +644,81 @@ function make_backup {
 	if [ -f $TAR_FILE_LFS ]; then rm -f $TAR_FILE_LFS; fi
 	if [ -f $TAR_FILE_LOG ]; then rm -f $TAR_FILE_LOG; fi
 	
-	if [[ $VERBOSE == "true" ]]; then
+	# if [[ $VERBOSE == "true" ]]; then
+		# MYLFS_ROOT=$(pwd)
+		# pushd $LFS
+			# echo "MYLFS_ROOT=$MYLFS_ROOT"
+			# echo "tar -czf $MYLFS_ROOT/$TAR_FILE_LFS ."
+			# tar --checkpoint=500 --checkpoint-action=dot-cvzf $MYLFS_ROOT/$TAR_FILE_LFS .
+		# popd
+		# pushd $LOG_DIR
+			# echo "MYLFS_ROOT=$MYLFS_ROOT"
+			# echo "tar -czf $MYLFS_ROOT/$TAR_FILE_LOG ."
+			# tar --checkpoint=500 --checkpoint-action=dot-cvzf -cvzf $MYLFS_ROOT/$TAR_FILE_LOG .
+		# popd
+	# else
+		# MYLFS_ROOT=$(pwd)
+		# pushd $LFS &> /dev/null
+			# echo "Backing up LFS to $TAR_FILE_LFS"
+			# tar --checkpoint=500 --checkpoint-action=dot-cvzf -czf $MYLFS_ROOT/$TAR_FILE_LFS .
+		# popd &> /dev/null
+		# pushd $LOG_DIR &> /dev/null
+			# echo "Backing up LOGS to $TAR_FILE_LOG"
+			# tar --checkpoint=500 --checkpoint-action=dot-cvzf -czf $MYLFS_ROOT/$TAR_FILE_LOG .
+		# popd &> /dev/null
+	# fi
+
+	if [[ $VERBOSE == "true" ]] && [[ $(command -v pv) == "" ]]; then
 		MYLFS_ROOT=$(pwd)
 		pushd $LFS
 			echo "MYLFS_ROOT=$MYLFS_ROOT"
 			echo "tar -czf $MYLFS_ROOT/$TAR_FILE_LFS ."
-			tar -cvzf $MYLFS_ROOT/$TAR_FILE_LFS .
+			tar --checkpoint=500 --checkpoint-action=dot -cvzf $MYLFS_ROOT/$TAR_FILE_LFS .
 		popd
 		pushd $LOG_DIR
 			echo "MYLFS_ROOT=$MYLFS_ROOT"
 			echo "tar -czf $MYLFS_ROOT/$TAR_FILE_LOG ."
-			tar -cvzf $MYLFS_ROOT/$TAR_FILE_LOG .
+			tar --checkpoint=500 --checkpoint-action=dot -cvzf $MYLFS_ROOT/$TAR_FILE_LOG .
 		popd
-	else
+	fi
+	if [[ $VERBOSE == "false" ]] && [[ $(command -v pv) == "" ]]; then
 		MYLFS_ROOT=$(pwd)
 		pushd $LFS &> /dev/null
-			tar -czf $MYLFS_ROOT/$TAR_FILE_LFS .
+			echo "Backing up LFS to $TAR_FILE_LFS"
+			tar --checkpoint=500 --checkpoint-action=dot -czf $MYLFS_ROOT/$TAR_FILE_LFS .
 		popd &> /dev/null
 		pushd $LOG_DIR &> /dev/null
-			tar -czf $MYLFS_ROOT/$TAR_FILE_LOG .
+			echo "Backing up LOGS to $TAR_FILE_LOG"
+			tar --checkpoint=500 --checkpoint-action=dot -czf $MYLFS_ROOT/$TAR_FILE_LOG .
+		popd &> /dev/null
+	fi
+
+	if [[ $VERBOSE == "true" ]] && [[ $(command -v pv) != "" ]]; then
+		MYLFS_ROOT=$(pwd)
+		pushd $LFS
+			echo "MYLFS_ROOT=$MYLFS_ROOT"
+			echo "tar -czf $MYLFS_ROOT/$TAR_FILE_LFS ."
+			#pv $MYLFS_ROOT/$TAR_FILE_LFS | tar -cvzf - -C .
+			tar -cf - . -P | pv -s $(du -sb . | awk '{print $1}') | gzip > $MYLFS_ROOT/$TAR_FILE_LFS
+		popd
+		pushd $LOG_DIR
+			echo "MYLFS_ROOT=$MYLFS_ROOT"
+			echo "tar -czf $MYLFS_ROOT/$TAR_FILE_LOG ."
+			#pv $MYLFS_ROOT/$TAR_FILE_LOG | tar -cvzf - -C .
+			tar -cf - . -P | pv -s $(du -sb . | awk '{print $1}') | gzip > $MYLFS_ROOT/$TAR_FILE_LOG
+		popd
+	fi
+	if [[ $VERBOSE == "false" ]] && [[ $(command -v pv) != "" ]]; then
+		MYLFS_ROOT=$(pwd)
+		pushd $LFS &> /dev/null
+			echo "Backing up LFS to $TAR_FILE_LFS"
+			#pv $MYLFS_ROOT/$TAR_FILE_LFS | tar -czf - -C .
+			tar -cf - . -P | pv -s $(du -sb . | awk '{print $1}') | gzip > $MYLFS_ROOT/$TAR_FILE_LFS
+		popd &> /dev/null
+		pushd $LOG_DIR &> /dev/null
+			echo "Backing up LOGS to $TAR_FILE_LOG"
+			#pv $MYLFS_ROOT/$TAR_FILE_LOG | tar -czf - -C .
+			tar -cf - . -P | pv -s $(du -sb . | awk '{print $1}') | gzip > $MYLFS_ROOT/$TAR_FILE_LOG
 		popd &> /dev/null
 	fi
 	

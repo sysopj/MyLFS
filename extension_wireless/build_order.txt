@@ -1,7 +1,7 @@
 # build_order.txt
 # <scriptname> (without .sh)
 
-wireless _
+wireless
 libnl
 iw
 wireless_tools
