@@ -100,7 +100,7 @@ while true; do
 		echo -e "\nInvalid input."
 	fi
 done
-SSID="${unique_array[$((selection_number-1))]}"
+SSID="${unique_array[$((selection_number))]}"
 
 # Get Passphrase
 echo " "

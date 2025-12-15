@@ -120,13 +120,13 @@ chown -R root:root \
     /usr/lib/gcc/$(gcc -dumpmachine)/$GCC_VERSION/include{,-fixed}
 #   /usr/lib/gcc/*linux-gnu/$GCC_VERSION/include{,-fixed}
 
-[ -h /usr/lib/cpp ] && unlink /usr/lib/cpp
-ln -sr /usr/bin/cpp /usr/lib
+#[ -h /usr/lib/cpp ] && unlink /usr/lib/cpp
+ln -sfr /usr/bin/cpp /usr/lib
 
 if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || \
 [[ "$LFS_VERSION" == "12.4" ]]; then
-	[ -h //usr/share/man/man1/cc.1 ] && unlink /usr/share/man/man1/cc.1
-	ln -s gcc.1 /usr/share/man/man1/cc.1
+	#[ -h //usr/share/man/man1/cc.1 ] && unlink /usr/share/man/man1/cc.1
+	ln -sf gcc.1 /usr/share/man/man1/cc.1
 fi
 
 ln -sf ../../libexec/gcc/$(gcc -dumpmachine)/$GCC_VERSION/liblto_plugin.so \
