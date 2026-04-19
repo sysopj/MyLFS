@@ -1,9 +1,17 @@
 # GMP Phase 4
 GMP_VERSION=$((basename $PKG_GMP .tar.xz) | cut -d "-" -f 2)
 
-if [[ "$LFS_VERSION" == "12.4" ]]; then
-	sed -i '/long long t1;/,+1s/()/(...)/' configure
-fi
+#export PKG_GCC=https://ftpmirror.gnu.org/gcc/gcc-15.2.0/gcc-15.2.0.tar.xz
+
+GCC_VER=$(basename $PKG_GCC .tar.xz | cut -d "-" -f 2)
+GCC_VER_MAJ=$(echo $GCC_VER | cut -d "." -f 1)
+#GCC_VER_MIN=$(echo $GCC_VER | cut -d "." -f 2)
+
+[[ $GCC_VER_MAJ -ge "15" ]] && sed -i '/long long t1;/,+1s/()/(...)/' configure
+
+# if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]]; then
+	# sed -i '/long long t1;/,+1s/()/(...)/' configure
+# fi
 
 ./configure --prefix=/usr    \
             --enable-cxx     \
@@ -35,7 +43,7 @@ if [[ "$LFS_VERSION" == "11.2" ]]; then
 	fi
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]]; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]]; then
 	if $RUN_TESTS
 	then
 		set +e

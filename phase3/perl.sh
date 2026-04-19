@@ -24,7 +24,7 @@ if [[ "$LFS_VERSION" == "12.2" ]];then
 	localedef -i C -f UTF-8 C.UTF-8
 fi
 
-if [[ "$LFS_VERSION" == "12.1" ]] || [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]]; then
+if [[ "$LFS_VERSION" == "12.1" ]] || [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]]; then
 	sh Configure -des                                         \
 				 -D prefix=/usr                               \
 				 -D vendorprefix=/usr                         \

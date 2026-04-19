@@ -1,6 +1,14 @@
 # GCC Phase 4
 GCC_VERSION=$((basename $PKG_GCC .tar.xz) | cut -d "-" -f 2)
 
+GLIBC_VER=$(basename $PKG_GLIBC .tar.xz | cut -d "-" -f 2)
+GLIBC_VER_MAJ=$(echo $GLIBC_VER | cut -d "." -f 1)
+GLIBC_VER_MIN=$(echo $GLIBC_VER | cut -d "." -f 2)
+
+GLIB_2_43_FIX_REQ=false
+[[ $GLIBC_VER_MAJ -ge "2" ]] && [[ $GLIBC_VER_MIN -ge "43" ]] && GLIB_2_43_FIX_REQ=true
+[[ $GLIB_2_43_FIX_REQ == true ]] && sed -i 's/char [*]q/const &/' libgomp/affinity-fmt.c
+
 [[ LIBSSP_SUPPORT == true ]] && LIBSSP_EN="--enable-libssp" || LIBSSP_EN=""
 
 if [[ "$LFS_VERSION" == "11.1" ]]; then
@@ -22,7 +30,7 @@ else
 	esac
 fi
 
-if [[ "$LFS_VERSION" == "12.4" ]] && [[ "$MULTILIB" == "true" ]]; then
+if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "true" ]]; then
 	sed '/STACK_REALIGN_DEFAULT/s/0/(!TARGET_64BIT \&\& TARGET_SSE)/' \
       -i gcc/config/i386/i386.h
 fi
@@ -44,7 +52,7 @@ if [[ "$LFS_VERSION" == "11.1" ]] || [[ "$LFS_VERSION" == "11.2" ]]; then
 fi
 
 if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || \
-[[ "$LFS_VERSION" == "12.4" ]] && [[ "$MULTILIB" == "false" ]]; then
+[[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "false" ]]; then
 	../configure --prefix=/usr           	\
 				LD=ld                   	\
 				--enable-languages=c,c++	\
@@ -59,7 +67,7 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || \
 fi
 
 if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || \
-[[ "$LFS_VERSION" == "12.4" ]] && [[ "$MULTILIB" == "true" ]]; then
+[[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "true" ]]; then
 
 	[ ! -f /usr/include/c++/${GCC_VERSION}/bits/c++config.h ] && \
 		cp -i /usr/include/c++/${GCC_VERSION}/${LFS_TGT}/bits/* \
@@ -86,7 +94,7 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || \
 fi
 
 if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || \
-[[ "$LFS_VERSION" == "12.4" ]]; then
+[[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]]; then
 	make
 	
 	ulimit -s -H unlimited
@@ -124,7 +132,7 @@ chown -R root:root \
 ln -sfr /usr/bin/cpp /usr/lib
 
 if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || \
-[[ "$LFS_VERSION" == "12.4" ]]; then
+[[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]]; then
 	#[ -h //usr/share/man/man1/cc.1 ] && unlink /usr/share/man/man1/cc.1
 	ln -sf gcc.1 /usr/share/man/man1/cc.1
 fi

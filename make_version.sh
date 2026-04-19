@@ -1769,6 +1769,235 @@ fi
 echo "grub" >> ./phase4/build_order.txt
 }
 
+function build_order_sysvinit_13.0(){
+cat << EOF > ./phase3/build_order.txt
+gettext
+bison
+perl
+python
+texinfo
+utillinux
+EOF
+
+
+cat << EOF > ./phase4/build_order.txt
+manpages
+ianaetc
+glibc
+zlib
+bzip2
+xz
+lz4
+zstd
+file
+readline
+m4
+bc
+flex
+tcl
+expect
+dejagnu
+pkgconfig
+binutils
+gmp
+mpfr
+mpc
+EOF
+[[ $MULTILIB == "true" ]] && echo "isl" >> ./phase4/build_order.txt
+cat << EOF >> ./phase4/build_order.txt
+attr
+acl
+libcap
+libxcrypt
+shadow
+gcc
+ncurses
+sed
+psmisc
+gettext
+bison
+grep
+bash
+libtool
+gdbm
+gperf
+expat
+inetutils
+less
+perl
+xmlparser
+intltool
+autoconf
+automake
+openssl
+elfutils
+libffi
+sqlite
+python
+flitcore
+packaging
+wheel
+setuptools
+ninja
+meson
+kmod
+coreutils
+diffutils
+gawk
+findutils
+groff
+gzip
+iproute2
+kbd
+libpipeline
+make
+patch
+tar
+texinfo
+vim
+markupsafe
+jinja2
+eudev SYSTEMD
+mandb
+procps
+utillinux
+e2fsprogs
+sysklogd
+sysvinit
+lfsbootscripts
+EOF
+[[ $DISK_BOOT != "0" ]] && echo "cpio" >> ./phase4/build_order.txt
+cat << EOF >> ./phase4/build_order.txt
+linux
+EOF
+
+if [[ $FIRMWARE == "UEFI" ]] || [[ $FIRMWARE == "uefi" ]]; then
+cat << EOF >> ./phase4/build_order.txt #_sysvinit-$LFS_VERSION.txt
+dosfstools
+efivar
+popt
+efibootmgr
+freetype
+EOF
+fi
+
+echo "grub" >> ./phase4/build_order.txt
+}
+
+
+function build_order_systemd_13.0(){
+cat << EOF > ./phase3/build_order.txt
+gettext
+bison
+perl
+python
+texinfo
+utillinux
+EOF
+
+
+cat << EOF > ./phase4/build_order.txt #_systemd-$LFS_VERSION.txt
+manpages
+ianaetc
+glibc
+zlib
+bzip2
+xz
+lz4
+zstd
+file
+readline
+m4
+bc
+flex
+tcl
+expect
+dejagnu
+pkgconfig
+binutils
+gmp
+mpfr
+mpc
+EOF
+[[ $MULTILIB == "true" ]] && echo "isl" >> ./phase4/build_order.txt
+cat << EOF >> ./phase4/build_order.txt
+attr
+acl
+libcap
+libxcrypt
+shadow
+gcc
+ncurses
+sed
+psmisc
+gettext
+bison
+grep
+bash
+libtool
+gdbm
+gperf
+expat
+inetutils
+less
+perl
+xmlparser
+intltool
+autoconf
+automake
+openssl
+elfutils
+libffi
+sqlite
+python
+flitcore
+packaging
+wheel
+setuptools
+ninja
+meson
+kmod
+coreutils
+diffutils
+gawk
+findutils
+groff
+gzip
+iproute2
+kbd
+libpipeline
+make
+patch
+tar
+texinfo
+vim
+markupsafe
+jinja2
+systemd
+dbus
+mandb
+procps
+utillinux
+e2fsprogs
+EOF
+[[ $DISK_BOOT != "0" ]] && echo "cpio" >> ./phase4/build_order.txt
+cat << EOF >> ./phase4/build_order.txt
+linux
+EOF
+
+if [[ $FIRMWARE == "UEFI" ]] || [[ $FIRMWARE == "uefi" ]]; then
+cat << EOF >> ./phase4/build_order.txt #_sysvinit-$LFS_VERSION.txt
+dosfstools
+efivar
+popt
+efibootmgr
+freetype
+EOF
+fi
+
+echo "grub" >> ./phase4/build_order.txt
+}
+
 function make_clean(){
 	if [ -f ./packages-$LFS_VERSION.sh ]; then
 		rm -f ./packages-$LFS_VERSION.sh
@@ -2045,7 +2274,7 @@ cat << "EOF" >> ./templates/boot__grub__grub.cfg
 EOF
 fi
 
-if [[ $LFS_VERSION == "12.2" ]] || [[ $LFS_VERSION == "12.3" ]] || [[ $LFS_VERSION == "12.4" ]]; then
+if [[ $LFS_VERSION == "12.2" ]] || [[ $LFS_VERSION == "12.3" ]] || [[ $LFS_VERSION == "12.4" ]] || [[ $LFS_VERSION == "13.0" ]]; then
 cat << "EOF" > ./templates/boot__grub__grub.cfg
 # Begin /boot/grub/grub.cfg
 set default=0
@@ -2168,7 +2397,15 @@ function make_packages(){
 		if [[ $(echo $FIELD_NAME | grep SYSTEMD) ]] && [[ $(echo ${wget_array[$i]} | grep pages) ]]; then
 			FIELD_NAME=SYSTEMDDOCS
 		fi
-
+		
+		if [[ $(echo $FIELD_NAME | grep SQLITE) ]] && [[ $(echo ${wget_array[$i]} | grep autoconf) ]]; then
+			FIELD_NAME=SQLITE
+		fi
+		
+		if [[ $(echo $FIELD_NAME | grep SQLITE) ]] && [[ $(echo ${wget_array[$i]} | grep doc) ]]; then
+			FIELD_NAME=SQLITEDOCS
+		fi
+		
 		if [[ $(echo $FIELD_NAME | grep TCL) ]] && [[ $(echo ${wget_array[$i]} | grep src) ]]; then
 			FIELD_NAME=TCL
 		fi

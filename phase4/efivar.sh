@@ -13,6 +13,18 @@
 # libefisec.so - is a library for managing UEFI signature lists
 # libefivar.so - is a library for the manipulation of EFI variables
 
+if [[ -f ../$(basename $PATCH_EFIVAR) ]]; then
+	patch -Np1 -i ../$(basename $PATCH_EFIVAR)
+fi
+
+# GLIBC_VER=$(basename $PKG_GLIBC .tar.xz | cut -d "-" -f 2)
+# GLIBC_VER_MAJ=$(echo $GLIBC_VER | cut -d "." -f 1)
+# GLIBC_VER_MIN=$(echo $GLIBC_VER | cut -d "." -f 2)
+
+# GLIB_2_43_FIX_REQ=false
+# [[ $GLIBC_VER_MAJ -ge "2" ]] && [[ $GLIBC_VER_MIN -ge "43" ]] && GLIB_2_43_FIX_REQ=true
+# [[ $GLIB_2_43_FIX_REQ == true ]] && patch -Np1 -i ../efivar-39-upstream_fixes-1.patch
+
 make ENABLE_DOCS=0
 
 # As Root

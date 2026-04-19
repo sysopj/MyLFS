@@ -45,6 +45,7 @@ Welcome to the
 											-12.2 support
 											-12.3 support
 											-12.4 support
+											-13.0 support
 
 
 *based on Kyle Glaws MyLFS script on github*
@@ -85,6 +86,7 @@ Welcome to the
 											-12.2 support
 											-12.3 support
 											-12.4 support
+											-13.0 support
 
 
 *based on Kyle Glaws MyLFS script on github*
@@ -132,6 +134,7 @@ Welcome to the
 											-12.2 support
 											-12.3 support
 											-12.4 support
+											-13.0 support
 
 
 *based on Kyle Glaws MyLFS script on github*
@@ -1256,7 +1259,7 @@ if [[ "$LFS_VERSION" == "11.2" ]];then
     fi
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]];then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]];then
     if [ -h $LFS/dev/shm ]; then
 	  install -v -d -m 1777 $LFS$(realpath /dev/shm)
 	else

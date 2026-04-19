@@ -11,7 +11,7 @@ if [[ "$LFS_VERSION" == "11.1" ]] || [[ "$LFS_VERSION" == "11.2" ]]; then
 		-i etc/login.defs
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]]; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]]; then
 	sed -e 's:#ENCRYPT_METHOD DES:ENCRYPT_METHOD YESCRYPT:' \
 		-e 's:/var/spool/mail:/var/mail:'                   \
 		-e '/PATH=/{s@/sbin:@@;s@/bin:@@}'                  \
@@ -35,6 +35,15 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_
 				--disable-static    \
 				--with-{b,yes}crypt \
 				--without-libbsd    \
+				--with-group-name-max-length=32
+fi
+
+if [[ "$LFS_VERSION" == "13.0" ]]; then
+	./configure --sysconfdir=/etc   \
+				--disable-static    \
+				--with-{b,yes}crypt \
+				--without-libbsd    \
+				--disable-logind    \
 				--with-group-name-max-length=32
 fi
 

@@ -1,0 +1,334 @@
+#!/bin/bash
+make: config.log or bin/config.log
+meson:	src/cairo-features.h and config.h
+
+
+
+iso8601: poetry
+pyvenv: poetry
+cryptography: maturin
+maturin: setuptools_rust
+poetry:resolver
+poetry:factory
+poetry:candidates
+poetry:prepare
+poetry:venv
+dependencies = [
+    #"poetry-core (==2.1.3)",
+    #"build (>=1.2.1,<2.0.0)",
+    #"cachecontrol[filecache] (>=0.14.0,<0.15.0)",
+    #"cleo (>=2.1.0,<3.0.0)",
+    #"dulwich (>=0.22.6,<0.23.0)",
+    #"fastjsonschema (>=2.18.0,<3.0.0)",
+    # <8.7 because .metadata() (and Distribution.metadata) can now return None,
+    # which requires some adaptions to our code.
+    #"importlib-metadata (>=4.4,<8.7) ; python_version < '3.10'",
+    #"installer (>=0.7.0,<0.8.0)",
+    #"keyring (>=25.1.0,<26.0.0)",
+    # packaging uses calver, so version is unclamped
+    #"packaging (>=24.0)",
+    #"pkginfo (>=1.12,<2.0)",
+    #"platformdirs (>=3.0.0,<5)",
+    "pyproject-hooks (>=1.0.0,<2.0.0)",
+    #"requests (>=2.26,<3.0)",
+    "requests-toolbelt (>=1.0.0,<2.0.0)",
+    "shellingham (>=1.5,<2.0)",
+    "tomli (>=2.0.1,<3.0.0) ; python_version < '3.11'",
+    "tomlkit (>=0.11.4,<1.0.0)",
+    # trove-classifiers uses calver, so version is unclamped
+    #"trove-classifiers (>=2022.5.19)",
+    "virtualenv (>=20.26.6,<21.0.0)",
+    "xattr (>=1.0.0,<2.0.0) ; sys_platform == 'darwin'",
+    "findpython (>=0.6.2,<0.7.0)",
+    "pbs-installer[download,install] (>=2025.1.6,<2026.0.0)",
+
+pyproject_hooks (from build)
+
+
+https://nouveau.freedesktop.org/FeatureMatrix.html
+
+
+
+
+
+
+mkdir -p /etc/X11/xorg.conf.d
+/etc/X11/xorg.conf.d/20-gpudriver.conf
+Section "Device"
+        Identifier "Card0"
+        Driver     "vmware"
+EndSection
+
+wget https://www.x.org/releases/individual/driver/xf86-video-vesa-2.6.0.tar.gz
+wget https://www.x.org/releases/individual/driver/xf86-video-fbdev-0.5.0.tar.gz
+wget https://www.x.org/releases/individual/driver/xf86-video-vmware-13.4.0.tar.gz
+./configure $XORG_CONFIG && make && make install
+libtool --finish /usr/lib/xorg/modules/drivers
+/sbin/ldconfig
+
+/etc/sddm.conf
+ServerPath=/opt/xorg/bin/X
+ServerPath=/usr/bin/X
+
+twm:
+export DISPLAY=:0
+
+xorg-server 1.11.4-1
+xorg-server-common 1.9.2-2
+xf86-input-vmmouse 12.7.0-3
+xf86-input-evdev 2.6.0-4
+xf86-input-keyboard 1.6.1-1
+xf86-input-mouse 1.7.1-2
+xf86-video-vmware 11.1.0-1
+
+
+/etc/rc.conf
+sddm_enable="yes"
+sddm_lang="US.UTF-8"
+
+kscreen
+Warning: osdmanager.h:23: KScreen::OsdAction is used as extension type but cannot be found.
+Warning: osdmanager.h:: Extension namespace for KScreen::OsdActionForeign does not exist
+
+pyside6 used by kde_framework:kcoreaddons-6.15.0.tar.xz
+
+cd ~
+curl 'https://invent.kde.org/sdk/kde-builder/-/raw/master/scripts/initial_setup.sh' > initial_setup.sh
+bash initial_setup.sh
+
+
+cat /etc/extension/extension_availible.list | grep 7z
+NAME=7zip@VERSION=24.09@FILE=extension_7zip-24.09.tar.xz@DESCRIPTION="7zip{space}is{space}a{space}file{space}archiver{space}that{space}archives{space}with{space}high{space}compression{space}ratios."
+NAME=7zip@VERSION=!24.09@FILE=extension_7zip-24.09.tar.xz@DESCRIPTION="7zip{space}is{space}a{space}file{space}archiver{space}that{space}archives{space}with{space}high{space}compression{space}ratios."
+NAME=7zip@VERSION=25.01@FILE=extension_7zip-25.01.tar.xz@DESCRIPTION="7zip{space}is{space}a{space}file{space}archiver{space}that{space}archives{space}with{space}high{space}compression{space}ratios."
+
+python3 setup.py build --build-type=all --build-docs --qtpaths=/opt/qt6/bin/
+python3 setup.py install --internal-build-type=all --build-docs --qtpaths=/opt/qt6/bin/
+
+Remove blank line
+	sed -i $(cat /etc/group | grep -n "^$" | cut -d \: -f 1)d /etc/group
+	sed -i $(cat /etc/passwd | grep -n "^$" | cut -d \: -f 1)d /etc/passwd
+
+vi /var/local/extension/sources/kde_plasma/plasma-nm-6.4.4/kcms/kcm_cellularnetwork/modemdetails.cpp
+extension_libuv-1.50.0 but 1.51.0 exsists
+
+ cd /var/local/extension/sources/kde_plasma/drkonqi-6.4.4/build/src/data
+&& /usr/bin/pip3 install --target /var/local/extension/sources/kde_plasma/drkonqq
+i-6.4.4/build/src/data/python pygdbmi psutil sentry-sdk
+
+LLVM:
+amdgpu-arch - lists AMD GPUs installed; at runtime it needs libhsa-runtime64.so which is not a part of BLFS
+nvptx-arch - lists NVIDIA GPUs installed; at runtime it needs libcuda.so which is not a part of BLFS
+
+- A recent version of [Gtk+](http://www.gtk.org/) (currently using version 3.24)
+- An install of Python which includes [PyGObject](https://wiki.gnome.org/action/show/Projects/PyGObject) and [Pycairo](https://cairographics.org/pycairo/)
+- An install of [GtkAda](https://github.com/AdaCore/gtkada)
+- An install of [GNATcoll](https://github.com/AdaCore/gnatcoll), configured with support for projects and Python scripting (`--enable-project`, `--with-python=...`)
+
+
+gcc -v
+Using built-in specs.
+COLLECT_GCC=gcc
+COLLECT_LTO_WRAPPER=/usr/libexec/gcc/x86_64-pc-linux-gnu/15.2.0/lto-wrapper
+Target: x86_64-pc-linux-gnu
+Configured with: ../configure --prefix=/usr LD=ld --enable-languages=c,c++ --enable-default-pie --enable-default-ssp --enable-host-pie --enable-multilib --with-multilib-list=m64,m32,mx32 --disable-bootstrap --disable-fixincludes --with-system-zlib
+Thread model: posix
+Supported LTO compression algorithms: zlib zstd
+gcc version 15.2.0 (GCC)
+
+See whats in initrd
+gunzip < initrd.img-6.16.1 | cpio -idmv
+
+/usr/sbin/mkinitramfs
+	binfiles="$binfiles lsblk 'add bin files here'"
+	
+
+CC="gcc -lssp" CXX="g++ -lssp"         	\
+
+
+findmnt --noheadings --output SOURCE --mountpoint /
+/dev/mapper/debian--vg-root
+vgs -o vg_name --noheadings
+  debian-vg
+pvs -o pv_name --noheadings --select vg_name=debian-vg
+  /dev/sda3
+
+LD_LIBRARY_PATH=../stubdata:../tools/ctestfw:../lib:$LD_LIBRARY_PATH  ../bin/pkgdata -O ../data/icupkg.inc -q -c -s /var/local/extension/sources/icu/source/data/out/build/icudt76l -d ../lib -m dll -r 76.1 -e icudt76  -T ./out/tmp -s ./out/build/icudt76l -p icudt76l -L icudata ./out/tmp/icudata.lst -I /var/local/extension/sources/icu/source/DESTDIR/usr/libx32
+.config
+	CONFIG_MODULE_SIG_KEY="certs/signing_key.pem"
+	CONFIG_SYSTEM_TRUSTED_KEYS="debian/canonical-certs.pem"
+	CONFIG_SYSTEM_REVOCATION_KEYS="debian/canonical-revoked-certs.pem"
+
+apt install efitools sbsigntool mokutil
+mkdir -p /mnt/lfs/root/secureboot/boot/efi/EFI/dsl_sq/
+mkdir -p /mnt/lfs/root/secureboot/boot/grub
+cp /mnt/lfs/boot/grub/grub.cfg /mnt/lfs/root/secureboot/boot/grub/grub.cfg.unsigned
+cd /mnt/lfs/root/secureboot
+openssl req -new -x509 -newkey rsa:2048 -keyout PK.key -outform der -out PK.der -days 3650 -nodes -subj "/CN=DSL Secure Boot PK/"
+openssl req -new -x509 -newkey rsa:2048 -keyout KEK.key -outform der -out KEK.der -days 3650 -nodes -subj "/CN=DSL Secure Boot KEK/"
+openssl req -new -x509 -newkey rsa:2048 -keyout DB.key -outform der -out DB.der -days 3650 -nodes -subj "/CN=DSL Secure Boot db/"
+openssl x509 -inform DER -in PK.der -out PK.pem
+openssl x509 -inform DER -in KEK.der -out KEK.pem
+openssl x509 -inform DER -in DB.der -out DB.pem
+cert-to-efi-sig-list -g "$(uuidgen)" PK.der PK.esl
+cert-to-efi-sig-list -g "$(uuidgen)" KEK.der KEK.esl
+cert-to-efi-sig-list -g "$(uuidgen)" DB.der DB.esl
+apt install uuid-runtime
+cert-to-efi-sig-list -g "$(uuidgen)" -k PK.key -c PK.der PK PK.esl PK.auth
+cert-to-efi-sig-list -g "$(uuidgen)" -k KEK.key -c KEK.der KEK KEK.esl KEK.auth
+cp /mnt/lfs/boot/efi/EFI/dsl_sq/grubx64.efi /mnt/lfs/root/sb2/grubx64.efi.unsigned
+sbsign --key db.key --cert db.crt --output grubx64.efi grubx64.efi.unsigned
+sbsign --key db.key --cert db.pem --output grubx64.efi grubx64.efi.unsigned
+efi-updatevar -e -f db.esl db
+sbsign --key db.key --cert db.crt --output boot/vmlinuz-6.16.1.signed /mnt/lfs/boot/vmlinuz-6.16.1
+sbsign --key db.key --cert db.pem --output vmlinuz-6.16.1.signed vmlinuz-6.16.1
+sbsign --key db.key --cert db.pem --output BOOTX64.EFI BOOTX64.EFI.unsigned
+sbsign --key db.key --cert db.crt --output boot/initrd.img-6.16.1.signed /mnt/lfs/boot/initrd.img-6.16.1
+Invalid DOS header magic
+
+github.com/rhboot/gnu-efi
+mkdir -p /var/lib/secureboot/keys
+cat > /var/lib/secureboot/mokconfig.cnf << "EOF"
+# This definition stops the following lines choking if HOME isn't
+# defined.
+HOME                    = .
+RANDFILE				= $ENV::HOME/.rnd
+
+[ req ]
+distinguished_name      = req_distinguished_name
+x509_extensions 		= v3
+string_mask            	= utf8only
+prompt			        = no
+
+# Passwords for private keys if not present they will be prompted for
+# input_password = secret
+# output_password = secret
+
+[ req_distinguished_name ]
+commonName                     	= Secure Boot Signature
+
+[ v3 ]
+subjectKeyIdentifier=hash
+authorityKeyIdentifier=keyid:always,issuer
+basicConstraints =critical,CA:FALSE
+extendedKeyUsage = codeSigning,1.3.6.1.4.1.311.10.3.6
+nsComment	= "OpenSSl Generated Certificate"
+EOF
+
+openssl req -config /var/lib/secureboot/mokconfig.cnf \
+	-new -x509 -newkey rsa:2048 	\
+	-nodes -days 36500 -outform DER	\
+	-keyout /var/lib/secureboot/MOK.key  -out /var/lib/secureboot/MOK.der
+openssl x509 -in /var/lib/secureboot/MOK.der -inform DER -outform PEM -out /var/lib/secureboot/MOK.pem
+make menuconfig
+	Enable loadable module support
+		Module signature verification 
+	CONFIG_MODULE_SIG=y
+	CONFIG_MODULE_SIG_ALL=y
+	hash alg SHA-512
+	make
+	make modules_install
+gnu-efi-3.0.18
+	make PREFIX=/usr
+	make PREFIX=/usr install
+efitools-1.9.2
+	GCC15=""
+	GXX15=""
+	[ $(gcc -dumpversion | cut -d "." -f 1) == 15 ] && GCC15="-std=gnu17" && GXX15="-std=gnu++17"
+	# [ $(gcc -dumpversion | cut -d "." -f 1) == 15 ] && GCC15="-std=gnu20" && GXX15="-std=gnu++20"
+	# [ $(gcc -dumpversion | cut -d "." -f 1) == 15 ] && GCC15="-std=gnu23" && GXX15="-std=gnu++23"
+	CC="gcc $GCC15 -D_XOPEN_SOURCE -D_GNU_SOURCE" CXX="g++ $GXX15 -D_XOPEN_SOURCE -D_GNU_SOURCE" \
+	make PREFIX=/usr
+	make PREFIX=/usr install
+sbsigntools-0.9.5
+	./autogen.sh
+	sed -i 's/libccan_a_SOURCES = \\/libccan_a_SOURCES = lib\\ccan/' lib/ccan/Makefile.am
+	./autogen.sh
+	cp -r lib/ccan.git/ccan/* lib/ccan/ccan/
+	./configure --prefix=/usr --libdir=${pwd}/lib/ccan/ccan/talloc/
+	
+	CC="gcc $GCC15" CXX="g++ $GXX15" make
+	CC="gcc -L lib/ccan.git/ccan/talloc/talloc.o" make
+
+sbsign --key /var/lib/secureboot/MOK.key --cert /var/lib/secureboot/MOK.pem /boot/vmlinuz-6.16.1.unsigned --output /boot/vmlinuz-6.16.1.signed
+
+	Documentation/module-signing.txt
+	
+	CONFIG_MODULE_SIG_KEY="certs/signing_key.pem"
+	CONFIG_SYSTEM_TRUSTED_KEYS="debian/canonical-certs.pem"
+	CONFIG_SYSTEM_REVOCATION_KEYS="debian/canonical-revoked-certs.pem"
+	
+pesign-116
+	CC="gcc -I/usr/include/efivar -I/usr/include/nspr" make
+
+
+https://invent.kde.org/sdk/kdesrc-build/-/archive/v22.07/kdesrc-build-v22.07.tar.gz
+
+
+Mozilla::CA
+https://github.com/libwww-perl/Mozilla-CA/releases/download/v20250202/Mozilla-CA-20250202.tar.gz
+Net::SSLeay
+https://github.com/radiator-software/p5-net-ssleay/archive/refs/tags/1.94.tar.gz
+ IO::Socket::SSL
+ https://github.com/noxxi/p5-io-socket-ssl/archive/refs/tags/2.089.tar.gz
+ YAML::XS
+ https://github.com/ingydotnet/yaml-libyaml-pm/archive/refs/tags/v0.904.0.tar.gz
+
+
+DNS Name api-akcdn.nuget.org
+DNS Name api-mg.nuget.org
+DNS Name api-mscdn-tm.nuget.org
+DNS Name api-secondary.nuget.org
+DNS Name api-vrcdn.nuget.org
+DNS Name apicatalog.nuget.org
+DNS Name apippe.nuget.org
+DNS Name blog.nuget.org
+DNS Name dist.nuget.org
+DNS Name globalcdn.nuget.org
+DNS Name symbols.nuget.org 
+
+dotnet restore --packages .\package\
+dotnet build --packages .\package\
+
+api.epicgames.dev:443 192.168.15.50 - - [13/Nov/2025:08:53:56 +0900] "GET /sdk/v1/default?platformId=WIN HTTP/1.1" 200 22067 "-" "EOS-SDK/1.17.0-41373641 (Windows/10.0.26100.1591.64bit) Simulation_Sand/UE5-CL-0"
+
+"POST api.epicgames.dev/auth/v1/oauth/token HTTP/1.1" 404 463 "-" "EOS-SDK/1.17.0-41373641 (Windows/10.0.26100.1591.64bit) Simulation_Sand/UE5-CL-0"
+api.epicgames.dev:443 192.168.15.50 - - [13/Nov/2025:11:21:26 +0900] "POST /auth/v1/oauth/token HTTP/1.1" 404 921 "-" "EOS-SDK/1.17.0-41373641 (Windows/10.0.26100.1591.64bit) Simulation_Sand/UE5-CL-0"
+api.epicgames.dev:443 192.168.15.50 - - [13/Nov/2025:11:21:47 +0900] "POST /telemetry/data/datarouter/api/v1/public/data?SessionID=%7BB7309540-47CA-1F0C-85E4-2DB7168369B6%7D&AppID=EOSSDK.PhaseRelease.ReleaseBuild&AppVersion=1.17.0-41373641%20-%20%2B%2BEOSSDK%2BRelease-1.17.0-CL-41373641&UserID=&AppEnvironment=Production&UploadType=sdkevents HTTP/1.1" 200 599 "-" "EOSSDK/++EOSSDK+Release-1.17.0-CL-41373641 Windows/10.0.26100.1.256.64bit"
+
+api.nuget.org:443 192.168.15.50 - - [13/Nov/2025:11:29:32 +0900] "GET /v3/registration5-gz-semver2/microsoft.net.sdk.aspire.manifest-8.0.100/index.json
+https://api.nuget.org/v3/registration5-gz-semver2/microsoft.net.sdk.aspire.manifest-8.0.100/index.json
+
+api.epicgames.dev/sdk/v1/default?platformId=WIN HTTP/1.1" 200 22067 "-" "EOS-SDK/1.17.0-41373641 (Windows/10.0.26100.1591.64bit) UnrealEngine/UE5-CL-0"
+api.epicgames.dev/auth/v1/oauth/token HTTP/1.1" 404 463 "-" "EOS-SDK/1.17.0-41373641 (Windows/10.0.26100.1591.64bit) UnrealEngine/UE5-CL-0"
+api.epicgames.dev/telemetry/data/datarouter/api/v1/public/data?SessionID=%7BA632F83C-4B83-8B3D-8C93-DDB118B4CCCE%7D&AppID=EOSSDK.PhaseRelease.ReleaseBuild&AppVersion=1.17.0-41373641%20-%20%2B%2BEOSSDK%2BRelease-1.17.0-CL-41373641&UserID=&AppEnvironment=Production&UploadType=sdkevents HTTP/1.1" 200 599 "-" "EOSSDK/++EOSSDK+Release-1.17.0-CL-41373641 Windows/10.0.26100.1.256.64bit"
+
+Visual Studio 2022 17.14 14.44.35207 toolchain and Windows 10 SDK (10.0.22621.0)
+
+Native Linux Development
+
+Recommended OS: Ubuntu 22.04, Rocky Linux 8 or newer, Redhat Linux 8 or newer
+
+Compiler: clang 20.1.8
+
+Cross-Compile Toolchain: v26 clang-20.1.8-based
+
+EOS
+
+    1.16.4-36651368
+	
+https://editor.unrealengine.com/en-US/get-started-with-unreal-engine
+
+Timestamp: 2025-11-14 06:59:15
+UserAgent = EOS-SDK/1.18.0.4-45343210 (Windows/10.0.26100.1591.64bit) MyProject/UE5-CL-0
+URI = api.epicgames.dev/auth/v1/oauth/token
+queryString = 
+requestMethod = GET
+----------------------------------------
+
+Timestamp: 2025-11-14 06:59:28
+UserAgent = EOSSDK/++EOSSDK+Release-1.18.0.4 Windows/10.0.26100.1.256.64bit
+URI = api.epicgames.dev/telemetry/data/datarouter/api/v1/public/data?SessionID=%7B2BD3C4A9-4291-0646-19C5-E78BF9E75AFB%7D&AppID=EOSSDK.PhaseRelease.ReleaseBuild&AppVersion=1.18.0.4-45343210%20-%20%2B%2BEOSSDK%2BRelease-1.18.0.4&UserID=&AppEnvironment=Production&UploadType=sdkevents
+queryString = 
+requestMethod = GET
+----------------------------------------

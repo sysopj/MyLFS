@@ -151,7 +151,7 @@ if [[ "$LFS_VERSION" == "12.3" ]] && [[ "$MULTILIB" == "false" ]]; then
 	sed '/RTLDLIST=/s@/usr@@g' -i $LFS/usr/bin/ldd
 fi
 
-if [[ "$LFS_VERSION" == "12.4" ]] && [[ "$MULTILIB" == "false" ]]; then
+if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "false" ]]; then
 	../configure                           \
 		--prefix=/usr                      \
 		--host=$LFS_TGT                    \
@@ -233,7 +233,7 @@ if [[ "$LFS_VERSION" == "12.3" ]] && [[ "$MULTILIB" == "true" ]]; then
 	PASS=true
 fi
 
-if [[ "$LFS_VERSION" == "12.4" ]] && [[ "$MULTILIB" == "true" ]]; then
+if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "true" ]]; then
 	#64 bit
 	../configure                           \
 		--prefix=/usr                      \

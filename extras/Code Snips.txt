@@ -1,0 +1,194 @@
+#!/bin/bash
+Kernel Features
+	PASS=true
+	[[ $(cat /boot/config-$(uname -r) | grep CONFIG_DRM=y) == "CONFIG_DRM=y" ]] && echo found || echo CONFIG_DRM not found && PASS=false
+	[[ $(cat /boot/config-$(uname -r) | grep CONFIG_DRM_AMDGPU=y) == "CONFIG_DRM_AMDGPU=y" ]] && echo found || echo CONFIG_DRM_AMDGPU not found && PASS=false
+	[[ $(cat /boot/config-$(uname -r) | grep CONFIG_DRM_AMDGPU_SI=y) == "CONFIG_DRM_AMDGPU_SI=y" ]] && echo found || echo CONFIG_DRM_AMDGPU_SI not found && PASS=false
+	[[ $(cat /boot/config-$(uname -r) | grep CONFIG_DRM_AMDGPU_CIK=y) == "CONFIG_DRM_AMDGPU_CIK=y" ]] && echo found || echo CONFIG_DRM_AMDGPU_CIK not found && PASS=false
+	[[ $(cat /boot/config-$(uname -r) | grep CONFIG_DRM_AMD_DC=y) == "CONFIG_DRM_AMD_DC=y" ]] && echo found || echo CONFIG_DRM_AMD_DC not found && PASS=false
+	[[ $(cat /boot/config-$(uname -r) | grep CONFIG_DRM_NOUVEAU=y) == "CONFIG_DRM_NOUVEAU=y" ]] && echo found || echo CONFIG_DRM_NOUVEAU not found && PASS=false
+	[[ $(cat /boot/config-$(uname -r) | grep CONFIG_DRM_NOUVEAU_GSP_DEFAULT=y) == "CONFIG_DRM_NOUVEAU_GSP_DEFAULT=y" ]] && echo found || echo CONFIG_DRM_NOUVEAU_GSP_DEFAULTnot found && PASS=false
+	[[ $(cat /boot/config-$(uname -r) | grep CONFIG_DRM_I915=y) == "CONFIG_DRM_I915=y" ]] && echo found || echo CONFIG_DRM_I915 not found && PASS=false
+	[[ $(cat /boot/config-$(uname -r) | grep CONFIG_DRM_VGEM=y) == "CONFIG_DRM_VGEM=y" ]] && echo found || echo CONFIG_DRM_VGEM not found && PASS=false
+	[[ $(cat /boot/config-$(uname -r) | grep CONFIG_DRM_VMWGFX=y) == "CONFIG_DRM_VMWGFX=y" ]] && echo found || echo CONFIG_DRM_VMWGFX not found && PASS=false
+	[[ $PASS == "false" ]] && echo kernel test failed && echo exit -1
+
+	PASS=false
+	[[ $(cat /boot/config-$(uname -r) | grep CONFIG_JFS_FS=y) == "CONFIG_JFS_FS=y" ]] && PASS=true
+	[[ $(cat /boot/config-$(uname -r) | grep CONFIG_JFS_FS=m) == "CONFIG_JFS_FS=m" ]] && PASS=true
+	[[ $PASS == "false" ]] && echo kernel test failed && exit -1
+
+pkg-config
+	pkg-config --modversion wayland-protocols
+	pkg-config --list-all | grep wayland-protocols
+
+	RUN_INSTALL=false
+	[[ ! $(pkg-config Qt6Mqtt --exists && echo $?) ]] && RUN_INSTALL=true
+	[[ $(pkg-config Qt6Mqtt --exists && echo $?) == 0 ]] && [[ $(pkg-config Qt6Mqtt --modversion) != "6.9.2" ]] && RUN_INSTALL=true
+
+	if [[ $BUILD_ALL == "false" ]] && [[ $RUN_INSTALL == "true" ]]; then
+
+CMAKE
+	-D CMAKE_C_FLAGS="-I/usr/include/python3.13/"
+	-D CMAKE_CXX_FLAGS="-I/$KF6_PREFIX/include"
+	[[ $(cmake --version | sed 2,5d | cut -d " " -f 3 | cut -d "." -f 1) == 4 ]] && OPTIONS="-D CMAKE_POLICY_VERSION_MINIMUM=3.5" || OPTIONS=""
+	
+GCC
+	GCC15=""
+	GXX15=""
+	[ $(gcc -dumpversion | cut -d "." -f 1) == 15 ] && GCC15="-std=gnu17" && GXX15="-std=gnu++17"
+	# [ $(gcc -dumpversion | cut -d "." -f 1) == 15 ] && GCC15="-std=gnu20" && GXX15="-std=gnu++20"
+	# [ $(gcc -dumpversion | cut -d "." -f 1) == 15 ] && GCC15="-std=gnu23" && GXX15="-std=gnu++23"
+	CC="gcc $GCC15" CXX="g++ $GXX15"         	\
+	
+	__stack_chk_guard undefined
+	CC="gcc -W -lssp"  CXX="g++ -W -lssp"      \
+	-Wl -fstack-protector -lssp
+	COLLECT_GCC=gcc
+	COLLECT_LTO_WRAPPER=/usr/lib/gcc/aarch64-linux-gnu/8/lto-wrapper
+	➜  ~ cat /boot/config-5.4.0-48-generic | grep STACKPROTECTOR 
+	HOST_CONFIGURE_ARGS+= --enable-libssp
+	--enable-gcc-hardening
+PATCH
+	diff -ruN plasma-nm/ plasma-nm-6.4.4/ > plasma-nm-6.4.4.patch
+
+Account
+	[[ $(cat /etc/group | grep lpadmin) == "" ]] && groupadd -g 19 lpadmin
+	[[ $(cat /etc/passwd | grep lp:) == "" ]] && useradd -c "Print Service User" -d /var/spool/cups -g lp -s /bin/false -u 9 lp
+
+Stubborn Versions
+	[[ $(command -v p) != "" ]] && [[ $(fcron --version 2>&1 | head -n 1 | cut -d " " -f 2) != "3.4.0" ]] && RUN_INSTALL=true
+
+Check
+	[[ ! $(pkg-config check --exists && echo $?) ]] && CHECK=false || CHECK=true
+	-D tests=$CHECK     \
+
+[ -f /etc/profile.d/xorg.sh ] && source /etc/profile.d/xorg.sh || echo "Installing xorg_build_env" && $(extension --install xorg_build_env) && echo "Finished xorg_build_env"
+
+LC_ALL=en_US.UTF-8
+LC_CTYPE=en_US.UTF-8
+LC_ALL=C.UTF-8
+unset CPLUS_INCLUDE_PATH
+
+pushd /etc/extension/startupfiles/
+	make install-unbound
+popd
+
+
+[[ -v $PATCH_QT ]] && [ -f ../$(basename $PATCH_QT) ] && patch -Np1 -i ../$(basename $PATCH_QT)
+
+VERSION_EXT=$(basename $PKG_ABSEIL_CPP .tar.gz | cut -d "-" -f 2) 
+
+OPTION=""
+[[ $FULL == "true" ]] && OPTION="$OPTION -D build_wizard=ON -D force_qt=Qt6" || OPTION="$OPTION -D build_wizard=OFF"
+[[ $(command -v gi-docgen) != "" ]] && OPTION="-D doc=enabled" || OPTION="-D doc=disabled"
+  
+[[ ! $(command -v asn1Parser) == "" ]] && echo "Installing libtasn1" && $(extension --install libtasn1) && echo "Finished libtasn1"
+[[ ! $(command -v update-ca-certificates) == "" ]] && echo "Installing p11_kit" && $(extension --install p11_kit) && echo "Finished p11_kit"
+[[ ! $(command -v sqlite3) == "" ]] && echo "Installing sqlite" && $(extension --install sqlite) && echo "Finished sqlite"
+
+[ ! -f /etc/profile.d/xorg.sh ] && echo "Installing xorg_build_env" && extension --install xorg_build_env && echo "Finished xorg_build_env"
+source /etc/profile.d/xorg.sh
+[ ! -d $XORG_PREFIX/include/GL ] && source /etc/profile.d/xorg.sh || echo "Installing xorgproto" && extension --install xorgproto && echo "Finished xorgproto"
+
+
+[[ $(cat /etc/extension/installed_version.list | grep kde_framework) == "" ]] && echo "Installing kde_framework" && extension --install kde_framework && echo "Finished kde_framework"
+
+
+pkg-config absl_time_zone --modversion
+
+[[ $(cat /etc/extension/installed_version.list | grep cifs_utils=7.2) == "" ]]
+
+[[ $(command -v qmake) != "" ]] && OPTIONS="--qt-gui" || OPTIONS=""
+
+#[[ $(cat /etc/group | grep sysopj) == "" ]] && groupadd sysopj
+#[[ $(cat /etc/passwd | grep sysopj:) == "" ]] && useradd -c "james a dillon" -d /home/sysopj/ -g sysopj -s /bin/bash -m sysopj
+
+
+GCC_FIX_15=false
+[[ $(gcc -dumpversion | cut -d "." -f 1) == 15 ]] && GCC_FIX_15=true
+
+if [[ $GCC_FIX_15 == true ]]; then
+cat > efivar-39.patch << "EOF"
+
+GLIBC_PATCH_REQ=false
+[[ $(ldconfig --version | head -n 1 | cut -d " " -f 4 | cut -d "." -f 1) == 2 ]] && \
+[[ $(ldconfig --version | head -n 1 | cut -d " " -f 4 | cut -d "." -f 2) -ge 43 ]] && GLIBC_PATCH_REQ=true
+
+./configure $XORG_CONFIG CFLAGS="-Wimplicit-function-declaration" CPPFLAGS="-Wimplicit-function-declaration" CXXFLAGS
+make
+
+export CFLAGS="$CFLAGS -D_ISOC11_SOURCE"
+
+if [[ $(command -v gi-docgen) != "" ]]; then
+	sed -e "/docdir =/s@\$@/ 'vte-0.80.3'@" \
+		-i ../doc/reference/meson.build     &&
+	meson configure -D docs=true            &&
+	ninja
+fi
+
+
+meson setup build \
+    --prefix=$XORG_PREFIX \
+    -Dbuildtype=release \
+    -Dc_args="-D_GNU_SOURCE -D_ISOC11_SOURCE" \
+    -Dcpp_args="-D_GNU_SOURCE -D_ISOC11_SOURCE" \
+      -Dc_args="-Wimplicit-function-declaration -Wno-discarded-qualifiers -Wno-deprecated-declarations" \
+      -Dcpp_args="-Wdeprecated-declarations"
+    ..
+	
+cmake -D CMAKE_INSTALL_PREFIX=/usr   \
+      -D CMAKE_BUILD_TYPE=Release    \
+      -D CMAKE_SKIP_INSTALL_RPATH=ON \
+      -D BUILD_SHARED_LIBS=ON        \
+      -D CMAKE_C_FLAGS="-Wimplicit-function-declaration -Wno-discarded-qualifiers -Wno-deprecated-declarations" \
+      -D CMAKE_CPP_FLAGS="-Wdeprecated-declarations"	\
+      -W no-dev -G Ninja .. &&
+
+GCC15=""
+GXX15=""
+#[ $(gcc -dumpversion | cut -d "." -f 1) == 15 ] && GCC15="-std=gnu++17" && GXX15="-std=c++17"
+#[ $(gcc -dumpversion | cut -d "." -f 1) == 15 ] && GCC15="-std=gnu++20" && GXX15="-std=c++20"
+#[ $(gcc -dumpversion | cut -d "." -f 1) == 15 ] && GCC15="-std=gnu++23" && GXX15="-std=c++23"
+
+CC="gcc $GCC15" CXX="g++ $GXX15"  			 \
+cmake -D CMAKE_INSTALL_PREFIX=/usr           \
+      -D CMAKE_SKIP_INSTALL_RPATH=ON         \
+      -D LLVM_ENABLE_FFI=ON                  \
+      -D CMAKE_BUILD_TYPE=Release            \
+      -D LLVM_BUILD_LLVM_DYLIB=ON            \
+      -D LLVM_LINK_LLVM_DYLIB=ON             \
+      -D LLVM_ENABLE_RTTI=ON                 \
+      -D LLVM_TARGETS_TO_BUILD="host;AMDGPU;BPF" \
+      -D LLVM_BINUTILS_INCDIR=/usr/include   \
+      -D LLVM_INCLUDE_BENCHMARKS=OFF         \
+      -D CLANG_DEFAULT_PIE_ON_LINUX=ON       \
+      -D CLANG_CONFIG_FILE_SYSTEM_DIR=/etc/clang \
+      $OPTION $OPTION2 -Wno-warning_flag 	\
+	  -DCMAKE_CXX_FLAGS="-Wno-attributes -Wno-format-truncation -Wno-dangling-reference" -G Ninja ..
+
+ninja
+	  
+# Existing code...
+pkg = import('pkgconfig')
+pkg.generate(
+  glib_networking_lib,
+  version: meson.project_version(),
+  name: 'glib-networking-2.0',
+  filebase: 'glib-networking-2.0',
+  description: 'Network extensions for GLib',
+  requires: glib_reqs,
+  install_dir: '/usr/lib/pkgconfig'
+)
+
+
+/usr/lib/pkgconfig/glib-networking-2.0.pc
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+datadir=${prefix}/share
+
+Name: glib-networking
+Description: Network extensions for GLib
+Version: 2.80.1
+Requires: glib-2.0,gobject-2.0,gio-2.0

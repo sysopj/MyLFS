@@ -3,9 +3,13 @@
             --disable-debuginfod         \
             --enable-libdebuginfod=dummy
 
-make
+LIBELF_ONLY=false
+[[ "$LFS_VERSION" == "13.0" ]] && LIBELF_ONLY=true
 
-if $RUN_TESTS
+[[ $LIBELF_ONLY == false ]] && make
+[[ $LIBELF_ONLY == true ]] && make -C lib && make -C libelf
+
+if $RUN_TESTS && [[ $LIBELF_ONLY == false ]]
 then
     set +e
     make check
@@ -27,7 +31,8 @@ if [[ "$MULTILIB" == "true" ]]; then
 		--disable-debuginfod     \
 		--enable-libdebuginfod=dummy
 
-	make
+	[[ $LIBELF_ONLY == false ]] && make
+	[[ $LIBELF_ONLY == true ]] && make -C lib && make -C libelf
 
 	make DESTDIR=$PWD/DESTDIR -C libelf install
 	install -vDm644 config/libelf.pc DESTDIR/usr/lib32/pkgconfig/libelf.pc
@@ -44,7 +49,8 @@ if [[ "$MULTILIB" == "true" ]]; then
 		--disable-debuginfod          \
 		--enable-libdebuginfod=dummy
 
-	make
+	[[ $LIBELF_ONLY == false ]] && make
+	[[ $LIBELF_ONLY == true ]] && make -C lib && make -C libelf
 
 	make DESTDIR=$PWD/DESTDIR -C libelf install
 	install -vDm644 config/libelf.pc DESTDIR/usr/libx32/pkgconfig/libelf.pc

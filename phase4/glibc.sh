@@ -104,7 +104,7 @@ if [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]]; then
 	ENABLE_KERNEL=5.4
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]]; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]]; then
 	../configure --prefix=/usr                        \
              --disable-werror                         \
              --enable-kernel=$ENABLE_KERNEL           \
@@ -171,7 +171,7 @@ if [[ "$LFS_VERSION" == "12.2" ]]; then
 	localedef -i zh_TW -f UTF-8 zh_TW.UTF-8
 fi
 
-if [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]]; then
+if [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]]; then
 	localedef -i C -f UTF-8 C.UTF-8
 	localedef -i cs_CZ -f UTF-8 cs_CZ.UTF-8
 	localedef -i de_DE -f ISO-8859-1 de_DE
@@ -208,7 +208,7 @@ if [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]]; then
 	localedef -i zh_TW -f UTF-8 zh_TW.UTF-8
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]]; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]]; then
 	make localedata/install-locales
 	tar -xf ../../$(basename $PKG_TZDATA)
 
@@ -229,7 +229,7 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_
 	ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] && [[ "$MULTILIB" == "true" ]]; then	
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "true" ]]; then	
 	mkdir -p /etc/ld.so.conf.d
 
 	#32 bit

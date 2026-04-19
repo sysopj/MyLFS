@@ -15,7 +15,7 @@ if [[ "$LFS_VERSION" == "11.2" ]];then
 				$([ "$(uname -m)" = x86_64 ] && echo --enable-64bit)
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]];then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]];then
 	./configure --prefix=/usr           \
 				--mandir=/usr/share/man \
 				--disable-rpath

@@ -1,5 +1,13 @@
 # Grub Phase 4
 
+GRUB_VER=$(basename $PKG_GRUB .tar.xz | cut -d "-" -f 2)
+GRUB_VER_MAJ=$(echo $GRUB_VER | cut -d "." -f 1)
+GRUB_VER_MIN=$(echo $GRUB_VER | cut -d "." -f 2)
+
+GRUB_2_14_FIX_REQ=false
+[[ $GRUB_VER_MAJ -ge "2" ]] && [[ $GRUB_VER_MIN -ge "14" ]] && GRUB_2_14_FIX_REQ=true
+[[ $GRUB_2_14_FIX_REQ == true ]] && sed 's/--image-base/--nonexist-linker-option/' -i configure
+
 
 	DISKLABEL=$(fdisk -l $GRUB_TARGET | grep Disklabel | cut -d ":" -f 2 | sed "s/ //g")
 
@@ -7,6 +15,10 @@
 		unset {C,CPP,CXX,LD}FLAGS
 		
 		echo depends bli part_gpt > grub-core/extra_deps.lst
+	fi
+	
+	if [[ "$LFS_VERSION" == "13.0" ]]; then
+		unset {C,CPP,CXX,LD}FLAGS
 	fi
 
 	./configure --prefix=/usr          \
@@ -17,8 +29,9 @@
 	make
 
 	make install
-	mv /etc/bash_completion.d/grub /usr/share/bash-completion/completions
-
+	#[[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] && mv /etc/bash_completion.d/grub /usr/share/bash-completion/completions
+	[ -f /etc/bash_completion.d/grub ] && mv /etc/bash_completion.d/grub /usr/share/bash-completion/completions
+	
 #if [[ $DISKLABEL == "dos" ]]; then
 	grub-install $GRUB_TARGET --target i386-pc
 #fi
@@ -87,6 +100,10 @@ if [[ $DISKLABEL == "gpt" ]]; then
 		
 		echo depends bli part_gpt > grub-core/extra_deps.lst
 	fi
+	
+	if [[ "$LFS_VERSION" == "13.0" ]]; then
+		unset {C,CPP,CXX,LD}FLAGS
+	fi
 
 	./configure --prefix=/usr        \
 				--sysconfdir=/etc    \
@@ -104,7 +121,7 @@ if [[ $DISKLABEL == "gpt" ]]; then
 	make
 
 	make install
-	mv /etc/bash_completion.d/grub /usr/share/bash-completion/completions
+	[ -f /etc/bash_completion.d/grub ] && mv /etc/bash_completion.d/grub /usr/share/bash-completion/completions
 
 	grub-install --target=x86_64-efi --removable
 

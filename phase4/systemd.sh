@@ -30,7 +30,7 @@ meson --prefix=/usr                 \
       ..
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]]; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]]; then
 meson setup ..                \
       --prefix=/usr           \
       --buildtype=release     \
@@ -96,7 +96,7 @@ cat > /etc/systemd/coredump.conf.d/maxuse.conf << EOF
 MaxUse=5G
 EOF
 
-if [[ "$LFS_VERSION" == "12.4" ]]; then
+if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]]; then
 	OPTIONALS="-D dbus=disabled"
 fi
 

@@ -1,6 +1,6 @@
 APP_VERSION=$(basename $PKG_CPIO .tar.bz2)
 
-if [[ "$LFS_VERSION" == "12.4" ]]; then
+if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]]; then
 	sed -e "/^extern int (\*xstat)/s/()/(const char * restrict,  struct stat * restrict)/" \
 		-i src/extern.h
 	sed -e "/^int (\*xstat)/s/()/(const char * restrict,  struct stat * restrict)/" \
