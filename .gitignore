@@ -68,3 +68,4 @@ templates/etc__systemd__network__10-eth-static.network
 testing/
 VirtualBox VMs/
 WARNING_TEST_BUILD
+extras/trixie - Private.sh
