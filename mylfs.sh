@@ -229,6 +229,35 @@ on the device you specify.
 EOF
 }
 
+# To accomendate older mount from util-linux 2.37.4 which is missing mount --mkdir
+mount() {
+    local args=()
+    local mkdir_flag=0
+    local target=""
+
+    # Parse arguments to look for --mkdir
+    for arg in "$@"; do
+        if [ "$arg" = "--mkdir" ]; then
+            mkdir_flag=1
+        else
+            args+=("$arg")
+            # The last non-flag argument is typically the mount point target
+            if [[ "$arg" != -* ]]; then
+                target="$arg"
+            fi
+        fi
+    done
+
+    # If --mkdir was passed, make the directory beforehand
+    if [ "$mkdir_flag" -eq 1 ] && [ -n "$target" ]; then
+        mkdir -p "$target"
+    fi
+
+    # Execute the actual system mount command with stripped arguments
+    command mount "${args[@]}"
+}
+
+
 function get_LFSPARTUUID {
 	local TARGET=$1
 
@@ -949,13 +978,17 @@ function is_multilib_compatible(){
 		FAIL=true
 	fi
 
-	gcc -mx32 dummy.c
-	if [ -f ./a.out ]; then
-		TEST=$(readelf -l a.out | grep '/ld-linux-x32')
-		rm -f a.out
-	else
-		FAIL=true
-	fi
+	# Not needed to make a LFS with support
+	# OEL9 does not support anyways
+	# if [[ $MULTILIB_mx32 == true ]]; then
+		# gcc -mx32 dummy.c
+		# if [ -f ./a.out ]; then
+			# TEST=$(readelf -l a.out | grep '/ld-linux-x32')
+			# rm -f a.out
+		# else
+			# FAIL=true
+		# fi
+	# fi
 	
 	if [[ $TEST == "" ]]; then
 		FAIL=true
@@ -1833,12 +1866,25 @@ function convert_img_vdi {
 }
 
 function is_multilib_compatible_test {
+	if [[ $(is_multilib_compatible) == "false" ]] && [[ $(cat /etc/os-release | grep ^NAME= | cut -d "=" -f2) == '"Oracle Linux Server"' ]]; then
+		echo "Error: your system is not multilib enabled."
+		echo "Tested with OEL9 with:"
+		echo 'echo "multilib_policy=all" >>  /etc/dnf/dnf.conf'
+		echo "dnf install libgcc.i686 glibc.i686 glibc-devel.i686 libstdc++.i686 libstdc++-devel.i686 zlib-devel.i686 -y"
+		 echo ""
+		echo "ln -s /usr/lib/libgcc_s.so.1 /usr/lib/libgcc_s.so"
+		echo "ln -s /usr/lib64/libgcc_s.so.1 /usr/lib64/libgcc_s.so"
+	else
+		echo "Pass: your system is multilib enabled."
+		break
+	fi
+	
 	if [[ $(is_multilib_compatible) == "false" ]]; then
 		echo "Error: your system is not multilib enabled."
 		echo "Tested with Debian Bookworm with:"
 		echo "apt install -y g++-multilib binutils-multiarch gcc-multilib"
-		echo "sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="quiet"/GRUB_CMDLINE_LINUX_DEFAULT="syscall.x32=y quiet"/g' /etc/default/grub"
-		echo "sed -i 's/GRUB_CMDLINE_LINUX=""/GRUB_CMDLINE_LINUX="syscall.x32=y"/g' /etc/default/grub"
+		echo "sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=\"quiet\"/GRUB_CMDLINE_LINUX_DEFAULT=\"syscall.x32=y quiet\"/g' /etc/default/grub"
+		echo "sed -i 's/GRUB_CMDLINE_LINUX=""/GRUB_CMDLINE_LINUX=\"syscall.x32=y\"/g' /etc/default/grub"
 		echo "update-grub2 && reboot"
 	else
 		echo "Pass: your system is multilib enabled."

@@ -95,7 +95,8 @@ if [[ "$MULTILIB" == "true" ]]; then
 	cp -Rv DESTDIR/usr/lib32/* /usr/lib32
 	cp -Rv DESTDIR/usr/include/m32/* /usr/include/m32/
 	rm -rf DESTDIR
-
+fi
+if [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]]; then
 	#x32 bit
 	make distclean
 	

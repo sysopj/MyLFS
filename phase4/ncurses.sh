@@ -131,7 +131,8 @@ if [[ "$MULTILIB" == "true" ]]; then
 	ln -sfv libncurses.so      DESTDIR/usr/lib32/libcurses.so
 	cp -Rv DESTDIR/usr/lib32/* /usr/lib32
 	rm -rf DESTDIR		
-	
+fi
+if [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]]; then	
 	#x32bit
 	make distclean
 

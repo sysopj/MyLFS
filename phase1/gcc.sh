@@ -128,7 +128,7 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_
 fi
 
 if [[ "$LFS_VERSION" == "11.3" ]] || [[ "$LFS_VERSION" == "12.0" ]] || [[ "$LFS_VERSION" == "12.1" ]] || [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "true" ]]; then
-	mlist=m64,m32,mx32
+	[[ "$MULTILIB_mx32" == "true" ]] && mlist=m64,m32,mx32 || mlist=m64,m32
 	../configure										\
 		--target=$LFS_TGT								\
 		--prefix=$LFS/tools								\

@@ -45,7 +45,8 @@ if [[ "$MULTILIB" == "true" ]]; then
 	ln -sf libbz2.so.1.0.8 /usr/lib32/libbz2.so.1
 	ln -sf libbz2.so.1.0.8 /usr/lib32/libbz2.so.1.0
 	install -Dm644 libbz2.a /usr/lib32/libbz2.a
-	
+fi
+if [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]]; then	
 	#x32 bit
 	make clean
 

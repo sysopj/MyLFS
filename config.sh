@@ -30,6 +30,7 @@ export LFS_FS=ext4
 export LFSINIT=sysvinit
 #export LFSINIT=systemd
 export MULTILIB=false
+export MULTILIB_mx32=false	# Fine Tune if you want this as part of multilib
 #export MULTILIB=true
 export FIRMWARE=BIOS
 #export FIRMWARE=UEFI

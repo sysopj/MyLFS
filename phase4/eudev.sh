@@ -144,7 +144,8 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_
 	mkdir -pv /usr/lib32/pkgconfig &&
 	cp -av libudev.so{,*[0-9]} /usr/lib32/ &&
 	sed -e "s;/usr/lib;&32;g" src/libudev/libudev.pc > /usr/lib32/pkgconfig/libudev.pc
-
+fi
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]]; then
 	#x32 ABI
 	rm -rf *
 	PKG_CONFIG_PATH="/usr/libx32/pkgconfig" \

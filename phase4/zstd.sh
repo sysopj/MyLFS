@@ -31,7 +31,8 @@ if [[ "$MULTILIB" == "true" ]]; then
 	cp -Rv DESTDIR/usr/lib/* /usr/lib32/
 	sed -e "/^libdir/s/lib$/lib32/" -i /usr/lib32/pkgconfig/libzstd.pc
 	rm -rf DESTDIR
-
+fi
+if [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]]; then
 	#x32 bit
 	make clean
 

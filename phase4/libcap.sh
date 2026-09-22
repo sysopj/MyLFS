@@ -24,11 +24,13 @@ if [[ "$MULTILIB" == "true" ]]; then
 	sed -e "s|^libdir=.*|libdir=/usr/lib32|" -i /usr/lib32/pkgconfig/lib{cap,psx}.pc
 	chmod -v 755 /usr/lib32/libcap.so.$LIBCAP_VERSION
 	rm -rf DESTDIR
-	
+fi
+if [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]]; then	
 	#x32bit
 	make distclean
 	
-	make CC="gcc -mx32 -march=x86-64"
+	# BUILD_CC="gcc" or add syscall.x32=y to kernel commands
+	make CC="gcc -mx32 -march=x86-64" BUILD_CC="gcc"
 	
 	make CC="gcc -mx32 -march=x86-64" lib=libx32 prefix=$PWD/DESTDIR/usr -C libcap install
 	cp -Rv DESTDIR/usr/libx32/* /usr/libx32

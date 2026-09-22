@@ -38,7 +38,8 @@ if [[ "$MULTILIB" == "true" ]]; then
 	install -vDm644 config/libelf.pc DESTDIR/usr/lib32/pkgconfig/libelf.pc
 	cp -Rv DESTDIR/usr/lib32/* /usr/lib32
 	rm -rf DESTDIR
-	
+fi
+if [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]]; then	
 	#x32bit
 	make distclean
 

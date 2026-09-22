@@ -141,7 +141,7 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_
 	mkdir build
 	cd build
 
-	mlist=m64,m32,mx32
+	[[ "$MULTILIB_mx32" == "true" ]] && mlist=m64,m32,mx32 || mlist=m64,m32
 	../configure                                       \
 		--build=$(../config.guess)                     \
 		--host=$LFS_TGT                                \

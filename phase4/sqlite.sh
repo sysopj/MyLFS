@@ -71,7 +71,8 @@ CC="gcc -m32" CXX="g++ -m32"         \
 	make DESTDIR=$PWD/DESTDIR install
 	cp -Rv DESTDIR/usr/lib32/* /usr/lib32
 	rm -rf DESTDIR
-	
+fi
+if [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]]; then	
 	#x32bit
 	make distclean
 

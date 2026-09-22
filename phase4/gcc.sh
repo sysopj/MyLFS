@@ -73,7 +73,7 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || \
 		cp -i /usr/include/c++/${GCC_VERSION}/${LFS_TGT}/bits/* \
 		/usr/include/c++/${GCC_VERSION}/bits/
 		
-	mlist=m64,m32,mx32
+	[[ "$MULTILIB_mx32" == "true" ]] && mlist=m64,m32,mx32 || mlist=m64,m32
 	../configure --prefix=/usr              \
 				LD=ld                       \
 				--enable-languages=c,c++    \

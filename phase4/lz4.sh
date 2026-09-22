@@ -23,7 +23,8 @@ if [[ "$MULTILIB" == "true" ]]; then
 	
 	make BUILD_STATIC=no PREFIX=/usr LIBDIR=/usr/lib32 DESTDIR=$(pwd)/m32 install &&
 	cp -a m32/usr/lib32/* /usr/lib32/
-
+fi
+if [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]]; then
 	#x32 bit
 	make clean
 

@@ -107,7 +107,8 @@ if [[ "$LFS_VERSION" == "12.1" ]] || [[ "$LFS_VERSION" == "12.2" ]] && [[ "$MULT
 	install -vm644 DESTDIR/usr/include/gnu/{lib-names,stubs}-32.h \
 				   $LFS/usr/include/gnu/
 	ln -svf ../lib32/ld-linux.so.2 $LFS/lib/ld-linux.so.2
-
+fi
+if [[ "$LFS_VERSION" == "12.1" ]] || [[ "$LFS_VERSION" == "12.2" ]] && [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]]; then
 	#x32 bit
 	make clean
 	find .. -name "*.a" -delete
@@ -185,7 +186,7 @@ if [[ "$LFS_VERSION" == "12.3" ]] && [[ "$MULTILIB" == "true" ]]; then
 	#32 Bit
 	make clean
 	find .. -name "*.a" -delete
-	
+
 	CC="$LFS_TGT-gcc -m32" \
 	CXX="$LFS_TGT-g++ -m32" \
 	../configure                             \
@@ -206,10 +207,12 @@ if [[ "$LFS_VERSION" == "12.3" ]] && [[ "$MULTILIB" == "true" ]]; then
 				   $LFS/usr/include/gnu/
 	ln -svf ../lib32/ld-linux.so.2 $LFS/lib/ld-linux.so.2
 
+fi
+if [[ "$LFS_VERSION" == "12.3" ]] && [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]]; then
 	#x32 bit
 	make clean
 	find .. -name "*.a" -delete
-
+	
 	CC="$LFS_TGT-gcc -mx32" \
 	CXX="$LFS_TGT-g++ -mx32" \
 	../configure                             \
@@ -271,10 +274,12 @@ if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULT
 				   $LFS/usr/include/gnu/
 	ln -svf ../lib32/ld-linux.so.2 $LFS/lib/ld-linux.so.2
 
+fi
+if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]]; then
 	#x32 bit
 	make clean
 	find .. -name "*.a" -delete
-
+	
 	CC="$LFS_TGT-gcc -mx32" \
 	CXX="$LFS_TGT-g++ -mx32" \
 	../configure                             \

@@ -17,7 +17,7 @@ GRUB_2_14_FIX_REQ=false
 		echo depends bli part_gpt > grub-core/extra_deps.lst
 	fi
 	
-	if [[ "$LFS_VERSION" == "13.0" ]]; then
+	if [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]]; then
 		unset {C,CPP,CXX,LD}FLAGS
 	fi
 
@@ -101,7 +101,7 @@ if [[ $DISKLABEL == "gpt" ]]; then
 		echo depends bli part_gpt > grub-core/extra_deps.lst
 	fi
 	
-	if [[ "$LFS_VERSION" == "13.0" ]]; then
+	if [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]]; then
 		unset {C,CPP,CXX,LD}FLAGS
 	fi
 
@@ -127,7 +127,7 @@ if [[ $DISKLABEL == "gpt" ]]; then
 
 	# If efivarfs is supported
 	if [[ "$(cat /proc/filesystems | grep efivarfs)" != "" ]]; then 
-		mountpoint /sys/firmware/efi/efivars ||  mount -t efivarfs efivarfs /sys/firmware/efi/efivars
+		#mountpoint /sys/firmware/efi/efivars ||  mount -t efivarfs efivarfs /sys/firmware/efi/efivars
 		[[ $DISK_BOOT != 0 ]] && mkinitramfs -o initrd.img-$KERNELVAR && grub-install --bootloader-id=$OS_ID --recheck
 	fi
 fi

@@ -169,7 +169,8 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] && [[ "$MULT
 	ln -sv libncursesw.so DESTDIR/usr/lib32/libncurses.so
 	cp -Rv DESTDIR/usr/lib32/* $LFS/usr/lib32
 	rm -rf DESTDIR
-	
+fi
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] && [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]];then	
 	#x32 bit
 	make distclean
 	
@@ -250,7 +251,9 @@ if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULT
 	ln -sv libncursesw.so DESTDIR/usr/lib32/libncurses.so
 	cp -Rv DESTDIR/usr/lib32/* $LFS/usr/lib32
 	rm -rf DESTDIR
-	
+fi
+
+if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]];then	
 	#x32 bit
 	make distclean
 	

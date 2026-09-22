@@ -90,7 +90,8 @@ if [[ "$LFS_VERSION" == "12.2" ]] && [[ "$MULTILIB" == "true" ]]; then
 	make DESTDIR=$PWD/DESTDIR install
 	cp -Rv DESTDIR/usr/lib32/* /usr/lib32
 	rm -rf DESTDIR	
-	
+fi
+if [[ "$LFS_VERSION" == "12.2" ]] && [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]]; then	
 	#x32bit
 	sed -e "s/^CLEANFILES =.*/CLEANFILES =/" -i man/Makefile
 	make clean
@@ -115,7 +116,7 @@ if [[ "$LFS_VERSION" == "12.2" ]] && [[ "$MULTILIB" == "true" ]]; then
 fi
 
 if [[ "$LFS_VERSION" == "12.3" ]] && [[ "$MULTILIB" == "true" ]]; then
-	#x32 bit
+	#32 bit
 	cd .. &&
 	rm -rf build &&
 	mkdir build &&
@@ -135,8 +136,9 @@ if [[ "$LFS_VERSION" == "12.3" ]] && [[ "$MULTILIB" == "true" ]]; then
 	DESTDIR=$PWD/DESTDIR ninja install
 	cp -Rv DESTDIR/usr/lib32/* /usr/lib32
 	rm -rf DESTDIR
-	
-	#32 bit
+fi
+if [[ "$LFS_VERSION" == "12.3" ]] && [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]]; then	
+	#x32 bit
 	cd .. &&
 	rm -rf build &&
 	mkdir build &&
@@ -159,7 +161,7 @@ if [[ "$LFS_VERSION" == "12.3" ]] && [[ "$MULTILIB" == "true" ]]; then
 fi
 
 if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "true" ]]; then
-	#x32 bit
+	#32 bit
 	cd .. &&
 	rm -rf build &&
 	mkdir build &&
@@ -179,17 +181,47 @@ if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULT
 	DESTDIR=$PWD/DESTDIR ninja install
 	cp -Rv DESTDIR/usr/lib32/* /usr/lib32
 	rm -rf DESTDIR
-	
-	#32 bit
+fi
+if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]]; then	
+	#x32 bit
 	cd .. &&
 	rm -rf build &&
 	mkdir build &&
 	cd build
 
+	# Make a cross compile file or add syscall.x32=y to kernel commands
+cat > x32-cross.ini << "EOF"
+[binaries]
+c = 'gcc'
+cpp = 'g++'
+ar = 'ar'
+strip = 'strip'
+pkgconfig = 'pkg-config'
+
+[built-in options]
+c_args = ['-mx32', '-march=x86-64']
+c_link_args = ['-mx32']
+cpp_args = ['-mx32', '-march=x86-64']
+cpp_link_args = ['-mx32']
+
+[properties]
+# This tells Meson the compiled binaries cannot be run natively
+needs_exe_wrapper = true
+
+[host_machine]
+system = 'linux'
+cpu_family = 'x86_64'
+cpu = 'x86_64'
+endian = 'little'
+EOF
+
 	PKG_CONFIG_PATH="/usr/libx32/pkgconfig" \
-	CC="gcc -mx32"                          \
-	CXX="g++ -mx32"                         \
-	meson setup --prefix=/usr ..    \
+	CC="gcc -mx32 -march=x86-64"                          \
+	CXX="g++ -mx32 -march=x86-64"                         \
+	BUILD_CC="gcc"							\
+	BUILD_CXX="g++"							\
+	meson setup --cross-file x32-cross.ini \
+				--prefix=/usr ..    \
 				--buildtype=release \
 				--libdir=/usr/libx32 \
 				-D manpages=false

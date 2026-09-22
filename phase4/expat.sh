@@ -34,7 +34,8 @@ if [[ "$MULTILIB" == "true" ]]; then
 	make DESTDIR=$PWD/DESTDIR install
 	cp -Rv DESTDIR/usr/lib32/* /usr/lib32
 	rm -rf DESTDIR
-	
+fi
+if [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]]; then	
 	#x32bit
 	sed -e "/^am__append_1/ s/doc//" -i Makefile
 	make clean

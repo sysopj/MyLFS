@@ -43,7 +43,8 @@ if [[ "$MULTILIB" == "true" ]]; then
 	cp -av .libs/libcrypt.so* /usr/lib32/ &&
 	make install-pkgconfigDATA &&
 	ln -svf libxcrypt.pc /usr/lib32/pkgconfig/libcrypt.pc
-	
+fi
+if [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]]; then	
 	#x32bit
 	make distclean
 	

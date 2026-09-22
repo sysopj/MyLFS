@@ -31,7 +31,8 @@ if [[ "$MULTILIB" == "true" ]]; then
 	make DESTDIR=$PWD/DESTDIR install
 	cp -Rv DESTDIR/usr/lib32/* /usr/lib32
 	rm -rf DESTDIR
-
+fi
+if [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]]; then
 	#x32 bit
 	make distclean
 

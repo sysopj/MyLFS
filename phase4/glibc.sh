@@ -257,7 +257,8 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_
 	echo "# Legacy biarch compatibility support" > /etc/ld.so.conf.d/zz_i386-biarch-compat.conf
 	echo "/lib32" >> /etc/ld.so.conf.d/zz_i386-biarch-compat.conf
 	echo "/usr/lib32" >> /etc/ld.so.conf.d/zz_i386-biarch-compat.conf
-
+fi
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]]; then
 	#x32 bit
 	rm -rf ./*
 	find .. -name "*.a" -delete
