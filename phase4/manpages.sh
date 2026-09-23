@@ -4,7 +4,7 @@ if [[ "$LFS_VERSION" == "12.2" ]];then
 	make prefix=/usr install
 fi
 
-if [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]];then
+if [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]];then
 	rm -v man3/crypt*
 	make -R GIT=false prefix=/usr install
 fi

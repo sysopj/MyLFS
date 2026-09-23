@@ -46,6 +46,7 @@ Welcome to the
 											-12.3 support
 											-12.4 support
 											-13.0 support
+											-13.1 support
 
 
 *based on Kyle Glaws MyLFS script on github*
@@ -87,6 +88,7 @@ Welcome to the
 											-12.3 support
 											-12.4 support
 											-13.0 support
+											-13.1 support
 
 
 *based on Kyle Glaws MyLFS script on github*
@@ -135,6 +137,7 @@ Welcome to the
 											-12.3 support
 											-12.4 support
 											-13.0 support
+											-13.1 support
 
 
 *based on Kyle Glaws MyLFS script on github*

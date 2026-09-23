@@ -17,7 +17,7 @@ GRUB_2_14_FIX_REQ=false
 		echo depends bli part_gpt > grub-core/extra_deps.lst
 	fi
 	
-	if [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]]; then
+	if [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]] || [[ "$LFS_VERSION" == "13.1" ]]; then
 		unset {C,CPP,CXX,LD}FLAGS
 	fi
 
@@ -101,7 +101,7 @@ if [[ $DISKLABEL == "gpt" ]]; then
 		echo depends bli part_gpt > grub-core/extra_deps.lst
 	fi
 	
-	if [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]]; then
+	if [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]] || [[ "$LFS_VERSION" == "13.1" ]]; then
 		unset {C,CPP,CXX,LD}FLAGS
 	fi
 

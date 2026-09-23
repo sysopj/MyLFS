@@ -16,7 +16,7 @@ if [[ "$LFS_VERSION" == "12.2" ]]; then
             --docdir=/usr/share/doc/bash-$BASH_VERSION
 fi
 
-if [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]]; then
+if [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]]; then
 ./configure --prefix=/usr             \
             --without-bash-malloc     \
             --with-installed-readline \

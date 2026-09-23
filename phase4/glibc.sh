@@ -1,7 +1,6 @@
 # Glibc Phase 4
-if [ -f ../$(basename $PATCH_GLIBC) ]; then
-	patch -Np1 -i ../$(basename $PATCH_GLIBC)
-fi
+[[ -f ../$(basename $PATCH_GLIBCFHS) ]] && patch -Np1 -i ../$(basename $PATCH_GLIBCFHS)
+[[ -f ../$(basename $PATCH_GLIBC) ]] && patch -Np1 -i ../$(basename $PATCH_GLIBC)
 
 if [[ "$LFS_VERSION" == "12.4" ]]; then
 	sed -e '/unistd.h/i #include <string.h>' \
@@ -104,7 +103,7 @@ if [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]]; then
 	ENABLE_KERNEL=5.4
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]]; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]]; then
 	../configure --prefix=/usr                        \
              --disable-werror                         \
              --enable-kernel=$ENABLE_KERNEL           \
@@ -171,7 +170,7 @@ if [[ "$LFS_VERSION" == "12.2" ]]; then
 	localedef -i zh_TW -f UTF-8 zh_TW.UTF-8
 fi
 
-if [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]]; then
+if [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]]; then
 	localedef -i C -f UTF-8 C.UTF-8
 	localedef -i cs_CZ -f UTF-8 cs_CZ.UTF-8
 	localedef -i de_DE -f ISO-8859-1 de_DE
@@ -208,7 +207,7 @@ if [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_
 	localedef -i zh_TW -f UTF-8 zh_TW.UTF-8
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]]; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]]; then
 	make localedata/install-locales
 	tar -xf ../../$(basename $PKG_TZDATA)
 
@@ -229,7 +228,7 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_
 	ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "true" ]]; then	
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]] && [[ "$MULTILIB" == "true" ]]; then	
 	mkdir -p /etc/ld.so.conf.d
 
 	#32 bit
@@ -258,7 +257,7 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_
 	echo "/lib32" >> /etc/ld.so.conf.d/zz_i386-biarch-compat.conf
 	echo "/usr/lib32" >> /etc/ld.so.conf.d/zz_i386-biarch-compat.conf
 fi
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]]; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]] && [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]]; then
 	#x32 bit
 	rm -rf ./*
 	find .. -name "*.a" -delete

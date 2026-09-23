@@ -62,7 +62,7 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] && [[ "$MULT
 				 --enable-default-hash-style=gnu
 fi
 
-if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "false" ]]; then
+if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]] && [[ "$MULTILIB" == "false" ]]; then
 	../configure --prefix=/usr       \
 				 --sysconfdir=/etc   \
 				 --enable-ld=default \
@@ -89,7 +89,7 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] && [[ "$MULT
 				 --enable-multilib
 fi
 
-if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "true" ]]; then
+if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]] && [[ "$MULTILIB" == "true" ]]; then
 	../configure --prefix=/usr       \
 				 --sysconfdir=/etc   \
 				 --enable-ld=default \
@@ -122,6 +122,6 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]];then
 	rm -fv /usr/lib/lib{bfd,ctf,ctf-nobfd,gprofng,opcodes,sframe}.a
 fi
 
-if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]];then
+if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]];then
 	rm -rfv /usr/lib/lib{bfd,ctf,ctf-nobfd,gprofng,opcodes,sframe}.a /usr/share/doc/gprofng/
 fi

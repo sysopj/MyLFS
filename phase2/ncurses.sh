@@ -85,7 +85,7 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] && [[ "$MULT
 		-i $LFS/usr/include/curses.h
 fi
 
-if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "false" ]];then
+if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]] && [[ "$MULTILIB" == "false" ]];then
 	#sed -i s/mawk// configure
 	
 	mkdir build
@@ -197,7 +197,7 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] && [[ "$MULT
 	rm -rf DESTDIR
 fi
 
-if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "true" ]];then
+if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]] && [[ "$MULTILIB" == "true" ]];then
 	#64 bit
 	mkdir build
 	pushd build
@@ -253,7 +253,7 @@ if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULT
 	rm -rf DESTDIR
 fi
 
-if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]];then	
+if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]] && [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]];then	
 	#x32 bit
 	make distclean
 	

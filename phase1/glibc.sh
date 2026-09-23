@@ -152,7 +152,7 @@ if [[ "$LFS_VERSION" == "12.3" ]] && [[ "$MULTILIB" == "false" ]]; then
 	sed '/RTLDLIST=/s@/usr@@g' -i $LFS/usr/bin/ldd
 fi
 
-if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "false" ]]; then
+if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]] && [[ "$MULTILIB" == "false" ]]; then
 	../configure                           \
 		--prefix=/usr                      \
 		--host=$LFS_TGT                    \
@@ -236,7 +236,7 @@ if [[ "$LFS_VERSION" == "12.3" ]] && [[ "$MULTILIB" == "true" ]] && [[ "$MULTILI
 	PASS=true
 fi
 
-if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "true" ]]; then
+if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]] && [[ "$MULTILIB" == "true" ]]; then
 	#64 bit
 	../configure                           \
 		--prefix=/usr                      \
@@ -275,7 +275,7 @@ if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULT
 	ln -svf ../lib32/ld-linux.so.2 $LFS/lib/ld-linux.so.2
 
 fi
-if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]]; then
+if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]] && [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]]; then
 	#x32 bit
 	make clean
 	find .. -name "*.a" -delete

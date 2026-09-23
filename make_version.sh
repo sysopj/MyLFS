@@ -1884,7 +1884,6 @@ fi
 echo "grub" >> ./phase4/build_order.txt
 }
 
-
 function build_order_systemd_13.0(){
 cat << EOF > ./phase3/build_order.txt
 gettext
@@ -1960,6 +1959,238 @@ kmod
 coreutils
 diffutils
 gawk
+findutils
+groff
+gzip
+iproute2
+kbd
+libpipeline
+make
+patch
+tar
+texinfo
+vim
+markupsafe
+jinja2
+systemd
+dbus
+mandb
+procps
+utillinux
+e2fsprogs
+EOF
+[[ $DISK_BOOT != "0" ]] && echo "cpio" >> ./phase4/build_order.txt
+cat << EOF >> ./phase4/build_order.txt
+linux
+EOF
+
+if [[ $FIRMWARE == "UEFI" ]] || [[ $FIRMWARE == "uefi" ]]; then
+cat << EOF >> ./phase4/build_order.txt #_sysvinit-$LFS_VERSION.txt
+dosfstools
+efivar
+popt
+efibootmgr
+freetype
+EOF
+fi
+
+echo "grub" >> ./phase4/build_order.txt
+}
+
+function build_order_sysvinit_13.1(){
+cat << EOF > ./phase3/build_order.txt
+gettext
+bison
+perl
+zlib
+mpdecimal
+python
+texinfo
+utillinux
+EOF
+
+
+cat << EOF > ./phase4/build_order.txt
+manpages
+ianaetc
+glibc
+zlib
+bzip2
+xz
+lz4
+zstd
+file
+readline
+pcre2
+m4
+bc
+flex
+tcl
+expect
+dejagnu
+ninja
+pkgconfig
+binutils
+gmp
+mpfr
+mpc
+EOF
+[[ $MULTILIB == "true" ]] && echo "isl" >> ./phase4/build_order.txt
+cat << EOF >> ./phase4/build_order.txt
+attr
+acl
+libcap
+libxcrypt
+shadow
+gawk
+gcc
+ncurses
+sed
+psmisc
+gettext
+bison
+grep
+bash
+libtool
+gdbm
+gperf
+expat
+inetutils
+less
+perl
+autoconf
+automake
+openssl
+elfutils
+libffi
+sqlite
+mpdecimal
+python
+flitcore
+packaging
+wheel
+setuptools
+meson
+kmod
+coreutils
+diffutils
+findutils
+groff
+gzip
+iproute2
+kbd
+libpipeline
+make
+patch
+tar
+texinfo
+vim
+markupsafe
+jinja2
+eudev SYSTEMD
+mandb
+procps
+utillinux
+e2fsprogs
+sysklogd
+sysvinit
+lfsbootscripts
+EOF
+[[ $DISK_BOOT != "0" ]] && echo "cpio" >> ./phase4/build_order.txt
+cat << EOF >> ./phase4/build_order.txt
+linux
+EOF
+
+if [[ $FIRMWARE == "UEFI" ]] || [[ $FIRMWARE == "uefi" ]]; then
+cat << EOF >> ./phase4/build_order.txt #_sysvinit-$LFS_VERSION.txt
+dosfstools
+efivar
+popt
+efibootmgr
+freetype
+EOF
+fi
+
+echo "grub" >> ./phase4/build_order.txt
+}
+
+function build_order_systemd_13.1(){
+cat << EOF > ./phase3/build_order.txt
+gettext
+bison
+perl
+zlib
+mpdecimal
+python
+texinfo
+utillinux
+EOF
+
+
+cat << EOF > ./phase4/build_order.txt #_systemd-$LFS_VERSION.txt
+manpages
+ianaetc
+glibc
+zlib
+bzip2
+xz
+lz4
+zstd
+file
+readline
+pcre2
+m4
+bc
+flex
+tcl
+expect
+dejagnu
+ninja
+pkgconfig
+binutils
+gmp
+mpfr
+mpc
+EOF
+[[ $MULTILIB == "true" ]] && echo "isl" >> ./phase4/build_order.txt
+cat << EOF >> ./phase4/build_order.txt
+attr
+acl
+libcap
+libxcrypt
+shadow
+gawk
+gcc
+ncurses
+sed
+psmisc
+gettext
+bison
+grep
+bash
+libtool
+gdbm
+gperf
+expat
+inetutils
+less
+perl
+autoconf
+automake
+openssl
+elfutils
+libffi
+sqlite
+mpdecimal
+python
+flitcore
+packaging
+wheel
+setuptools
+meson
+kmod
+coreutils
+diffutils
 findutils
 groff
 gzip

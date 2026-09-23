@@ -1,6 +1,8 @@
 # Python Phase 4
 PYTHON_VERSION=$((basename $PKG_PYTHON .tar.xz) | cut -d "-" -f 2)
 
+[ -f ../$(basename $PATCH_PYTHON) ] && patch -Np1 -i ../$(basename $PATCH_PYTHON)
+
 if [[ "$LFS_VERSION" == "11.1" ]]; then
 	./configure --prefix=/usr        \
 				--enable-shared      \
@@ -25,7 +27,7 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]]; then
 				--enable-optimizations
 fi
 
-if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]]; then
+if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]]; then
 	./configure --prefix=/usr          \
 				--enable-shared        \
 				--with-system-expat    \
@@ -67,7 +69,7 @@ if [[ "$LFS_VERSION" == "12.2" ]]; then
 		/usr/share/doc/python-$PYTHON_VERSION/html
 fi
 
-if [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]]; then		
+if [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]]; then		
 	tar --strip-components=1  \
 		--no-same-owner       \
 		--no-same-permissions \

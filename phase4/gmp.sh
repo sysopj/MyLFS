@@ -9,7 +9,7 @@ GCC_VER_MAJ=$(echo $GCC_VER | cut -d "." -f 1)
 
 [[ $GCC_VER_MAJ -ge "15" ]] && sed -i '/long long t1;/,+1s/()/(...)/' configure
 
-# if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]]; then
+# if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]]; then
 	# sed -i '/long long t1;/,+1s/()/(...)/' configure
 # fi
 
@@ -43,7 +43,7 @@ if [[ "$LFS_VERSION" == "11.2" ]]; then
 	fi
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]]; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]]; then
 	if $RUN_TESTS
 	then
 		set +e

@@ -32,9 +32,11 @@ SQLITE_VERSION=$SQLITE_VERSION_A.$SQLITE_VERSION_2
 
 #[[ $SQLITE_VERSION == 3510200 ]] && SQLITE_VERSION=3.51.2
 
-SQLITE_DOCS_VERSION=$((basename $PKG_SQLITEDOCS .tar.xz) | cut -d "-" -f 3)
+[[ "$(basename $PKG_SQLITEDOCS | cut -d "." -f 2)" == "zip" ]] && IS_ZIP=true || IS_ZIP=false
 
-tar -xf ../$(basename $PKG_SQLITEDOCS)
+$IS_ZIP && SQLITE_DOCS_VERSION=$((basename $PKG_SQLITEDOCS .zip) | cut -d "-" -f 3) || SQLITE_DOCS_VERSION=$((basename $PKG_SQLITEDOCS .tar.xz) | cut -d "-" -f 3)
+
+$IS_ZIP && python3 -m zipfile -e ../$(basename $PKG_SQLITEDOCS) . ||  tar -xf ../$(basename $PKG_SQLITEDOCS)
 
 ./configure --prefix=/usr     \
             --disable-static  \

@@ -1,12 +1,13 @@
 # GCC Phase 4
 GCC_VERSION=$((basename $PKG_GCC .tar.xz) | cut -d "-" -f 2)
+GCC_VER_MAJ=$(echo $GCC_VERSION | cut -d "." -f 1)
 
 GLIBC_VER=$(basename $PKG_GLIBC .tar.xz | cut -d "-" -f 2)
 GLIBC_VER_MAJ=$(echo $GLIBC_VER | cut -d "." -f 1)
 GLIBC_VER_MIN=$(echo $GLIBC_VER | cut -d "." -f 2)
 
 GLIB_2_43_FIX_REQ=false
-[[ $GLIBC_VER_MAJ -ge "2" ]] && [[ $GLIBC_VER_MIN -ge "43" ]] && GLIB_2_43_FIX_REQ=true
+[[ $GLIBC_VER_MAJ -ge "2" ]] && [[ $GLIBC_VER_MIN -ge "43" ]] && [[ "$GCC_VER_MAJ" == "15" ]] && GLIB_2_43_FIX_REQ=true
 [[ $GLIB_2_43_FIX_REQ == true ]] && sed -i 's/char [*]q/const &/' libgomp/affinity-fmt.c
 
 [[ LIBSSP_SUPPORT == true ]] && LIBSSP_EN="--enable-libssp" || LIBSSP_EN=""
@@ -30,7 +31,7 @@ else
 	esac
 fi
 
-if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "true" ]]; then
+if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]] && [[ "$MULTILIB" == "true" ]]; then
 	sed '/STACK_REALIGN_DEFAULT/s/0/(!TARGET_64BIT \&\& TARGET_SSE)/' \
       -i gcc/config/i386/i386.h
 fi
@@ -52,7 +53,7 @@ if [[ "$LFS_VERSION" == "11.1" ]] || [[ "$LFS_VERSION" == "11.2" ]]; then
 fi
 
 if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || \
-[[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "false" ]]; then
+[[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]] && [[ "$MULTILIB" == "false" ]]; then
 	../configure --prefix=/usr           	\
 				LD=ld                   	\
 				--enable-languages=c,c++	\
@@ -67,7 +68,7 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || \
 fi
 
 if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || \
-[[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "true" ]]; then
+[[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]] && [[ "$MULTILIB" == "true" ]]; then
 
 	[ ! -f /usr/include/c++/${GCC_VERSION}/bits/c++config.h ] && \
 		cp -i /usr/include/c++/${GCC_VERSION}/${LFS_TGT}/bits/* \
@@ -94,11 +95,12 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || \
 fi
 
 if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || \
-[[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]]; then
+[[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]]; then
 	make
 	
 	ulimit -s -H unlimited
-	
+fi
+if [[ "$GCC_VER_MAJ" == "14" ]]; then
 	sed -e '/cpython/d'               -i ../gcc/testsuite/gcc.dg/plugin/plugin.exp
 	sed -e 's/no-pic /&-no-pie /'     -i ../gcc/testsuite/gcc.target/i386/pr113689-1.c
 	sed -e 's/300000/(1|300000)/'     -i ../libgomp/testsuite/libgomp.c-c++-common/pr109062.c
@@ -124,21 +126,23 @@ if [[ "$LFS_VERSION" == "11.1" ]]; then
 	rm -rf /usr/lib/gcc/$(gcc -dumpmachine)/$GCC_VERSION/include-fixed/bits/
 fi
 
-chown -R root:root \
-    /usr/lib/gcc/$(gcc -dumpmachine)/$GCC_VERSION/include{,-fixed}
-#   /usr/lib/gcc/*linux-gnu/$GCC_VERSION/include{,-fixed}
+[[ "$GCC_VER_MAJ" == "11" ]] || [[ "$GCC_VER_MAJ" == "12" ]] || [[ "$GCC_VER_MAJ" == "13" ]] && chown -R root:root /usr/lib/gcc/*linux-gnu/$GCC_VERSION/include{,-fixed}
+[[ "$GCC_VER_MAJ" == "14" ]] || [[ "$GCC_VER_MAJ" == "15" ]] && chown -R root:root /usr/lib/gcc/$(gcc -dumpmachine)/$GCC_VERSION/include{,-fixed}
+[[ "$GCC_VER_MAJ" == "16" ]] && chown -R root:root $(gcc -print-file-name=include){,-fixed}
+
 
 #[ -h /usr/lib/cpp ] && unlink /usr/lib/cpp
 ln -sfr /usr/bin/cpp /usr/lib
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || \
-[[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]]; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]]; then
 	#[ -h //usr/share/man/man1/cc.1 ] && unlink /usr/share/man/man1/cc.1
 	ln -sf gcc.1 /usr/share/man/man1/cc.1
 fi
 
-ln -sf ../../libexec/gcc/$(gcc -dumpmachine)/$GCC_VERSION/liblto_plugin.so \
-        /usr/lib/bfd-plugins/
+[[ "$GCC_VER_MAJ" == "11" ]] || [[ "$GCC_VER_MAJ" == "12" ]] || [[ "$GCC_VER_MAJ" == "13" ]] || [[ "$GCC_VER_MAJ" == "14" ]] || [[ "$GCC_VER_MAJ" == "15" ]] && \
+	ln -sf ../../libexec/gcc/$(gcc -dumpmachine)/$GCC_VERSION/liblto_plugin.so /usr/lib/bfd-plugins/
+	
+[[ "$GCC_VER_MAJ" == "16" ]] && ln -sfvr $(gcc -print-prog-name=liblto_plugin.so) /usr/lib/bfd-plugins/
 
 mkdir -p /usr/share/gdb/auto-load/usr/lib
 mv /usr/lib/*gdb.py /usr/share/gdb/auto-load/usr/lib

@@ -40,7 +40,7 @@ if [[ "$LFS_VERSION" == "12.3" ]]; then
 	ninja install
 fi
 
-if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]]; then
+if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]]; then
 	mkdir -p build
 	cd       build
 
@@ -160,7 +160,7 @@ if [[ "$LFS_VERSION" == "12.3" ]] && [[ "$MULTILIB" == "true" ]] && [[ "$MULTILI
 	rm -rf DESTDIR
 fi
 
-if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "true" ]]; then
+if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]] && [[ "$MULTILIB" == "true" ]]; then
 	#32 bit
 	cd .. &&
 	rm -rf build &&
@@ -182,7 +182,7 @@ if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULT
 	cp -Rv DESTDIR/usr/lib32/* /usr/lib32
 	rm -rf DESTDIR
 fi
-if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]]; then	
+if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]] && [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]]; then	
 	#x32 bit
 	cd .. &&
 	rm -rf build &&

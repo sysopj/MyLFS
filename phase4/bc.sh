@@ -3,7 +3,7 @@ if [[ "$LFS_VERSION" == "11.2" ]] || [[ "$LFS_VERSION" == "11.3" ]] || [[ "$LFS_
 	CC=gcc ./configure --prefix=/usr -G -O3 -r
 fi
 
-if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]];then
+if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]];then
 	CC='gcc -std=c99' ./configure --prefix=/usr -G -O3 -r
 fi
 

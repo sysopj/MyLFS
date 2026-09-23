@@ -52,6 +52,27 @@ meson setup ..                \
       -D docdir=/usr/share/doc/$(basename $PKG_SYSTEMD .tar.gz)
 fi
 
+if [[ "$LFS_VERSION" == "13.1" ]]; then
+meson setup ..                \
+      --prefix=/usr           \
+      --buildtype=release     \
+      -D default-dnssec=no    \
+      -D firstboot=false      \
+      -D install-tests=false  \
+      -D ldconfig=false       \
+      -D sysusers=false       \
+      -D rpmmacrosdir=no      \
+      -D homed=disabled       \
+      -D man=disabled         \
+      -D mode=release         \
+      -D pamconfdir=no        \
+      -D dev-kvm-mode=0660    \
+      -D nobody-group=nogroup \
+      -D sysupdate=disabled   \
+      -D ukify=disabled       \
+      -D docdir=/usr/share/doc/$(basename $PKG_SYSTEMD .tar.gz)
+fi
+
 ninja
 
 ninja install
@@ -100,7 +121,7 @@ if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]]; then
 	OPTIONALS="-D dbus=disabled"
 fi
 
-if [[ "$MULTILIB" == "true" ]]; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "true" ]]; then
 	#32bit
 	rm -rf *
 	
@@ -132,7 +153,68 @@ if [[ "$MULTILIB" == "true" ]]; then
 	cp -v  DESTDIR/usr/lib32/pkgconfig/* /usr/lib32/pkgconfig/
 	rm -rf DESTDIR
 fi
-if [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]]; then	
+
+if [[ "$LFS_VERSION" == "13.1" ]] && [[ "$MULTILIB" == "true" ]]; then
+	#32bit
+	rm -rf *
+
+cat > lib32 << "EOF"
+[binaries]
+c = 'gcc'
+cpp = 'g++'
+ar = 'ar'
+strip = 'strip'
+pkgconfig = 'pkg-config'
+
+[built-in options]
+c_args = ['-m32', '-march=x86-64']
+c_link_args = ['-m32']
+cpp_args = ['-m32', '-march=x86-64']
+cpp_link_args = ['-m32']
+
+[properties]
+# This tells Meson the compiled binaries cannot be run natively
+needs_exe_wrapper = true
+
+[host_machine]
+system = 'linux'
+cpu_family = 'x86_64'
+cpu = 'x86_64'
+endian = 'little'
+EOF
+	
+	PKG_CONFIG_PATH="/usr/lib32/pkgconfig" \
+	CC="gcc -m32"                        \
+	CXX="g++ -m32"                       \
+	LANG=en_US.UTF-8                    \
+	meson setup --prefix=/usr           \
+				--buildtype=release     \
+				--cross-file=lib32      \
+				-D default-dnssec=no    \
+				-D firstboot=false      \
+				-D install-tests=false  \
+				-D ldconfig=false       \
+				-D sysusers=false       \
+				-D rpmmacrosdir=no      \
+				-D homed=disabled       \
+				-D userdb=false         \
+				-D man=disabled         \
+				-D mode=release         \
+				-D nobody-group=nogroup \
+				-D sysupdate=disabled   \
+				-D ukify=disabled       \
+				..
+	
+	LANG=en_US.UTF-8 ninja
+	
+	LANG=en_US.UTF-8 DESTDIR=$PWD/DESTDIR ninja install
+	cp -av DESTDIR/usr/lib32/libsystemd.so* /usr/lib32/
+	cp -av DESTDIR/usr/lib32/libudev.so* /usr/lib32/
+	cp -v  DESTDIR/usr/lib32/pkgconfig/* /usr/lib32/pkgconfig/
+	rm -rf DESTDIR
+fi
+
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]]; then	
 	#x32bit
 	rm -rf *
 
@@ -182,6 +264,67 @@ EOF
 		  -D man=disabled                \
 		  -D mode=release                \
 		  $OPTIONALS 
+	
+	LANG=en_US.UTF-8 ninja
+	
+	LANG=en_US.UTF-8 DESTDIR=$PWD/DESTDIR ninja install
+	cp -av DESTDIR/usr/libx32/libsystemd.so* /usr/libx32/
+	cp -av DESTDIR/usr/libx32/libudev.so* /usr/libx32/
+	cp -v  DESTDIR/usr/libx32/pkgconfig/* /usr/libx32/pkgconfig/
+	rm -rf DESTDIR
+fi	
+
+if [[ "$LFS_VERSION" == "13.1" ]] && [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]]; then	
+	#x32bit
+	rm -rf *
+
+	# Make a cross compile file or add syscall.x32=y to kernel commands
+cat > libx32 << "EOF"
+[binaries]
+c = 'gcc'
+cpp = 'g++'
+ar = 'ar'
+strip = 'strip'
+pkgconfig = 'pkg-config'
+
+[built-in options]
+c_args = ['-mx32', '-march=x86-64']
+c_link_args = ['-mx32']
+cpp_args = ['-mx32', '-march=x86-64']
+cpp_link_args = ['-mx32']
+
+[properties]
+# This tells Meson the compiled binaries cannot be run natively
+needs_exe_wrapper = true
+
+[host_machine]
+system = 'linux'
+cpu_family = 'x86_64'
+cpu = 'x86_64'
+endian = 'little'
+EOF
+	
+	PKG_CONFIG_PATH="/usr/libx32/pkgconfig" \
+	CC="gcc -mx32"                      \
+	CXX="g++ -mx32"                     \
+	LANG=en_US.UTF-8                    \
+	meson setup --prefix=/usr           \
+				--buildtype=release     \
+				--cross-file=libx32     \
+				-D default-dnssec=no    \
+				-D firstboot=false      \
+				-D install-tests=false  \
+				-D ldconfig=false       \
+				-D sysusers=false       \
+				-D rpmmacrosdir=no      \
+				-D homed=disabled       \
+				-D userdb=false         \
+				-D man=disabled         \
+				-D mode=release         \
+				-D nobody-group=nogroup \
+				-D sysupdate=disabled   \
+				-D ukify=disabled       \
+				..
 	
 	LANG=en_US.UTF-8 ninja
 	

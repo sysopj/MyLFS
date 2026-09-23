@@ -1,6 +1,8 @@
 # Tar Phase 4
 TAR_VERSION=$((basename $PKG_TAR .tar.xz) | cut -d "-" -f 2)
 
+[ -f ../$(basename $PATCH_TAR) ] && patch -Np1 -i ../$(basename $PATCH_TAR)
+
 FORCE_UNSAFE_CONFIGURE=1  \
 ./configure --prefix=/usr
 

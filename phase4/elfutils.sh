@@ -4,7 +4,7 @@
             --enable-libdebuginfod=dummy
 
 LIBELF_ONLY=false
-[[ "$LFS_VERSION" == "13.0" ]] && LIBELF_ONLY=true
+[[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]] && LIBELF_ONLY=true
 
 [[ $LIBELF_ONLY == false ]] && make
 [[ $LIBELF_ONLY == true ]] && make -C lib && make -C libelf

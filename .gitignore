@@ -19,6 +19,8 @@ extras/bookworm - Private.sh
 logs-*
 logs/
 mnt/
+phase3/build_order.txt
+phase4/build_order.txt
 packages*
 packages/
 phase1/build_order.txt.backup
@@ -27,7 +29,7 @@ phase4/build_order_initv-*.txt
 phase4/build_order_systemd-*.txt
 phase4/build_order.txt
 secrets.sh
-static/boot__config-*
+#static/boot__config-*
 static/etc__group
 static/etc__inittab
 static/etc__ld.so.conf.d__zz_i386-biarch-compat.conf
