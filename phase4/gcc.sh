@@ -120,7 +120,8 @@ fi
 # Added to fix cc1plus not found
 #mkdir -p /usr/lib/gcc/$(gcc -dumpmachine)/$GCC_VERSION/include{,-fixed}
 
-make install
+# Fix a race condition that occures in multilib installs
+[[ "$MULTILIB" == "true" ]] && make -j1 install || make install
 
 if [[ "$LFS_VERSION" == "11.1" ]]; then
 	rm -rf /usr/lib/gcc/$(gcc -dumpmachine)/$GCC_VERSION/include-fixed/bits/
