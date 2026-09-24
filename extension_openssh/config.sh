@@ -1,6 +1,13 @@
 echo "# packages.sh" > extension_openssh/packages.sh
 echo "#export PKG_<SCRIPTNAME>=<pkg URL>" >> extension_openssh/packages.sh
-echo "export PKG_OPENSSH=https://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-9.8p1.tar.gz" >> extension_openssh/packages.sh
+
+if [[ $LFS_VERSION == "12.2" ]] || [[ $LFS_VERSION == "12.3" ]] || [[ $LFS_VERSION == "12.4" ]] || [[ $LFS_VERSION == "13.0" ]]; then
+	echo "export PKG_OPENSSH=https://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-9.8p1.tar.gz" >> extension_openssh/packages.sh
+fi
+
+if [[ $LFS_VERSION == "13.1" ]]; then
+	echo "export PKG_OPENSSH=https://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-10.2p1.tar.gz" >> extension_openssh/packages.sh
+fi
 
 if [[ $LFS_VERSION == "12.2" ]]; then
 	echo "export PKG_BLFSSYSTEMD=https://www.linuxfromscratch.org/blfs/downloads/systemd/blfs-systemd-units-20240801.tar.xz" >> extension_openssh/packages.sh
@@ -18,6 +25,11 @@ if [[ $LFS_VERSION == "12.4" ]]; then
 fi
 
 if [[ $LFS_VERSION == "13.0" ]]; then
+	echo "export PKG_BLFSSYSTEMD=https://www.linuxfromscratch.org/blfs/downloads/13.0-systemd/blfs-systemd-units-20251204.tar.xz" >> extension_openssh/packages.sh
+	echo "export PKG_BLFSBOOTSCRIPTS=https://anduin.linuxfromscratch.org/BLFS/blfs-bootscripts/blfs-bootscripts-20251220.tar.xz" >> extension_openssh/packages.sh
+fi
+
+if [[ $LFS_VERSION == "13.1" ]]; then
 	echo "export PKG_BLFSSYSTEMD=https://www.linuxfromscratch.org/blfs/downloads/13.0-systemd/blfs-systemd-units-20251204.tar.xz" >> extension_openssh/packages.sh
 	echo "export PKG_BLFSBOOTSCRIPTS=https://anduin.linuxfromscratch.org/BLFS/blfs-bootscripts/blfs-bootscripts-20251220.tar.xz" >> extension_openssh/packages.sh
 fi

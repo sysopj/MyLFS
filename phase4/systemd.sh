@@ -158,34 +158,6 @@ if [[ "$LFS_VERSION" == "13.1" ]] && [[ "$MULTILIB" == "true" ]]; then
 	#32bit
 	rm -rf *
 
-cat > lib32 << "EOF"
-[binaries]
-c = 'gcc'
-cpp = 'g++'
-ar = 'ar'
-strip = 'strip'
-pkgconfig = 'pkg-config'
-
-[built-in options]
-c_args = ['-m32', '-march=x86-64']
-c_link_args = ['-m32']
-cpp_args = ['-m32', '-march=x86-64']
-cpp_link_args = ['-m32']
-
-[properties]
-# This tells Meson the compiled binaries cannot be run natively
-needs_exe_wrapper = true
-
-[host_machine]
-system = 'linux'
-cpu_family = 'x86_64'
-cpu = 'x86_64'
-endian = 'little'
-EOF
-	
-	PKG_CONFIG_PATH="/usr/lib32/pkgconfig" \
-	CC="gcc -m32"                        \
-	CXX="g++ -m32"                       \
 	LANG=en_US.UTF-8                    \
 	meson setup --prefix=/usr           \
 				--buildtype=release     \
@@ -218,38 +190,12 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_
 	#x32bit
 	rm -rf *
 
-	# Make a cross compile file or add syscall.x32=y to kernel commands
-cat > x32-cross.ini << "EOF"
-[binaries]
-c = 'gcc'
-cpp = 'g++'
-ar = 'ar'
-strip = 'strip'
-pkgconfig = 'pkg-config'
-
-[built-in options]
-c_args = ['-mx32', '-march=x86-64']
-c_link_args = ['-mx32']
-cpp_args = ['-mx32', '-march=x86-64']
-cpp_link_args = ['-mx32']
-
-[properties]
-# This tells Meson the compiled binaries cannot be run natively
-needs_exe_wrapper = true
-
-[host_machine]
-system = 'linux'
-cpu_family = 'x86_64'
-cpu = 'x86_64'
-endian = 'little'
-EOF
-	
 	PKG_CONFIG_PATH="/usr/libx32/pkgconfig" \
 	CC="gcc -mx32"                       \
 	CXX="g++ -mx32"                      \
 	LANG=en_US.UTF-8                     \
 	meson setup .. 						 \
-		  --cross-file x32-cross.ini     \
+		  --cross-file=libx32		     \
 		  --prefix=/usr                  \
 		  --libdir=/usr/libx32           \
 		  --buildtype=release            \
@@ -278,32 +224,6 @@ if [[ "$LFS_VERSION" == "13.1" ]] && [[ "$MULTILIB" == "true" ]] && [[ "$MULTILI
 	#x32bit
 	rm -rf *
 
-	# Make a cross compile file or add syscall.x32=y to kernel commands
-cat > libx32 << "EOF"
-[binaries]
-c = 'gcc'
-cpp = 'g++'
-ar = 'ar'
-strip = 'strip'
-pkgconfig = 'pkg-config'
-
-[built-in options]
-c_args = ['-mx32', '-march=x86-64']
-c_link_args = ['-mx32']
-cpp_args = ['-mx32', '-march=x86-64']
-cpp_link_args = ['-mx32']
-
-[properties]
-# This tells Meson the compiled binaries cannot be run natively
-needs_exe_wrapper = true
-
-[host_machine]
-system = 'linux'
-cpu_family = 'x86_64'
-cpu = 'x86_64'
-endian = 'little'
-EOF
-	
 	PKG_CONFIG_PATH="/usr/libx32/pkgconfig" \
 	CC="gcc -mx32"                      \
 	CXX="g++ -mx32"                     \

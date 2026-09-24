@@ -9,9 +9,8 @@ case $(uname -m) in
     ;;
 esac
 
-if [[ -f ../$(basename $PATCH_GLIBC) ]]; then
-	patch -Np1 -i ../$(basename $PATCH_GLIBC)
-fi
+[[ -f ../$(basename $PATCH_GLIBCFHS) ]] && patch -Np1 -i ../$(basename $PATCH_GLIBCFHS)
+[[ -f ../$(basename $PATCH_GLIBC) ]] && patch -Np1 -i ../$(basename $PATCH_GLIBC)
 
 mkdir build
 cd build
@@ -152,12 +151,27 @@ if [[ "$LFS_VERSION" == "12.3" ]] && [[ "$MULTILIB" == "false" ]]; then
 	sed '/RTLDLIST=/s@/usr@@g' -i $LFS/usr/bin/ldd
 fi
 
-if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]] && [[ "$MULTILIB" == "false" ]]; then
+if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "false" ]]; then
 	../configure                           \
 		--prefix=/usr                      \
 		--host=$LFS_TGT                    \
 		--build=$(../scripts/config.guess) \
 		--enable-kernel=5.4                \
+		--disable-nscd                     \
+		libc_cv_slibdir=/usr/lib
+	
+	make
+  	make DESTDIR=$LFS install
+
+	sed '/RTLDLIST=/s@/usr@@g' -i $LFS/usr/bin/ldd
+fi
+
+if [[ "$LFS_VERSION" == "13.1" ]] && [[ "$MULTILIB" == "false" ]]; then
+	../configure                           \
+		--prefix=/usr                      \
+		--host=$LFS_TGT                    \
+		--build=$(../scripts/config.guess) \
+		--enable-kernel=5.10                \
 		--disable-nscd                     \
 		libc_cv_slibdir=/usr/lib
 	
@@ -236,7 +250,7 @@ if [[ "$LFS_VERSION" == "12.3" ]] && [[ "$MULTILIB" == "true" ]] && [[ "$MULTILI
 	PASS=true
 fi
 
-if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]] && [[ "$MULTILIB" == "true" ]]; then
+if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "true" ]]; then
 	#64 bit
 	../configure                           \
 		--prefix=/usr                      \
@@ -275,7 +289,49 @@ if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_
 	ln -svf ../lib32/ld-linux.so.2 $LFS/lib/ld-linux.so.2
 
 fi
-if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]] && [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]]; then
+
+
+if [[ "$LFS_VERSION" == "13.1" ]] && [[ "$MULTILIB" == "true" ]]; then
+	#64 bit
+	../configure                           \
+		--prefix=/usr                      \
+		--host=$LFS_TGT                    \
+		--build=$(../scripts/config.guess) \
+		--enable-kernel=5.10               \
+		--disable-nscd                     \
+		libc_cv_slibdir=/usr/lib
+	  
+	make
+	make DESTDIR=$LFS install
+	  
+	sed '/RTLDLIST=/s@/usr@@g' -i $LFS/usr/bin/ldd
+	 
+	#32 Bit
+	make clean
+	find .. -name "*.a" -delete
+	
+	CC="$LFS_TGT-gcc -m32" \
+	CXX="$LFS_TGT-g++ -m32" \
+	../configure                             \
+		  --prefix=/usr                      \
+		  --host=$LFS_TGT32                  \
+		  --build=$(../scripts/config.guess) \
+		  --enable-kernel=5.10               \
+		  --disable-nscd                     \
+		  --libdir=/usr/lib32                \
+		  --libexecdir=/usr/lib32            \
+		  libc_cv_slibdir=/usr/lib32
+		  
+	make
+	make DESTDIR=$PWD/DESTDIR install
+	cp -a DESTDIR/usr/lib32 $LFS/usr/
+	install -vm644 DESTDIR/usr/include/gnu/{lib-names,stubs}-32.h \
+				   $LFS/usr/include/gnu/
+	ln -svf ../lib32/ld-linux.so.2 $LFS/lib/ld-linux.so.2
+
+fi
+
+if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]]; then
 	#x32 bit
 	make clean
 	find .. -name "*.a" -delete
@@ -287,6 +343,33 @@ if [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_
 		  --host=$LFS_TGTX32                 \
 		  --build=$(../scripts/config.guess) \
 		  --enable-kernel=5.4                \
+		  --disable-nscd                     \
+		  --libdir=/usr/libx32               \
+		  --libexecdir=/usr/libx32           \
+		  libc_cv_slibdir=/usr/libx32
+
+	make
+	make DESTDIR=$PWD/DESTDIR install
+	cp -a DESTDIR/usr/libx32 $LFS/usr/
+	install -vm644 DESTDIR/usr/include/gnu/{lib-names,stubs}-x32.h \
+				   $LFS/usr/include/gnu/
+	ln -svf ../libx32/ld-linux-x32.so.2 $LFS/lib/ld-linux-x32.so.2
+	
+	PASS=true
+fi
+
+if [[ "$LFS_VERSION" == "13.1" ]] && [[ "$MULTILIB" == "true" ]] && [[ "$MULTILIB_mx32" == "true" ]]; then
+	#x32 bit
+	make clean
+	find .. -name "*.a" -delete
+	
+	CC="$LFS_TGT-gcc -mx32" \
+	CXX="$LFS_TGT-g++ -mx32" \
+	../configure                             \
+		  --prefix=/usr                      \
+		  --host=$LFS_TGTX32                 \
+		  --build=$(../scripts/config.guess) \
+		  --enable-kernel=5.10               \
 		  --disable-nscd                     \
 		  --libdir=/usr/libx32               \
 		  --libexecdir=/usr/libx32           \

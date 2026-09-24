@@ -1,23 +1,23 @@
-echo "# packages.sh" > extension_openssh/packages.sh
-echo "#export PKG_<SCRIPTNAME>=<pkg URL>" >> extension_openssh/packages.sh
-echo "export PKG_DHCPCD=https://github.com/NetworkConfiguration/dhcpcd/releases/download/v10.2.4/dhcpcd-10.2.4.tar.xz" >> extension_openssh/packages.sh
+echo "# packages.sh" > extension_dhcpcd/packages.sh
+echo "#export PKG_<SCRIPTNAME>=<pkg URL>" >> extension_dhcpcd/packages.sh
+echo "export PKG_DHCPCD=https://github.com/NetworkConfiguration/dhcpcd/releases/download/v10.2.4/dhcpcd-10.2.4.tar.xz" >> extension_dhcpcd/packages.sh
 
 if [[ $LFS_VERSION == "12.2" ]]; then
-	echo "export PKG_BLFSSYSTEMD=https://www.linuxfromscratch.org/blfs/downloads/systemd/blfs-systemd-units-20240801.tar.xz" >> extension_openssh/packages.sh
-	echo "export PKG_BLFSBOOTSCRIPTS=https://anduin.linuxfromscratch.org/BLFS/blfs-bootscripts/blfs-bootscripts-20240416.tar.xz" >> extension_openssh/packages.sh
+	echo "export PKG_BLFSSYSTEMD=https://www.linuxfromscratch.org/blfs/downloads/systemd/blfs-systemd-units-20240801.tar.xz" >> extension_dhcpcd/packages.sh
+	echo "export PKG_BLFSBOOTSCRIPTS=https://anduin.linuxfromscratch.org/BLFS/blfs-bootscripts/blfs-bootscripts-20240416.tar.xz" >> extension_dhcpcd/packages.sh
 fi
 
 if [[ $LFS_VERSION == "12.3" ]]; then
-	echo "export PKG_BLFSSYSTEMD=https://www.linuxfromscratch.org/blfs/downloads/systemd/blfs-systemd-units-20241211.tar.xz" >> extension_openssh/packages.sh
-	echo "export PKG_BLFSBOOTSCRIPTS=https://anduin.linuxfromscratch.org/BLFS/blfs-bootscripts/blfs-bootscripts-20250225.tar.xz" >> extension_openssh/packages.sh
+	echo "export PKG_BLFSSYSTEMD=https://www.linuxfromscratch.org/blfs/downloads/systemd/blfs-systemd-units-20241211.tar.xz" >> extension_dhcpcd/packages.sh
+	echo "export PKG_BLFSBOOTSCRIPTS=https://anduin.linuxfromscratch.org/BLFS/blfs-bootscripts/blfs-bootscripts-20250225.tar.xz" >> extension_dhcpcd/packages.sh
 fi
 
 if [[ $LFS_VERSION == "12.4" ]]; then
-	echo "export PKG_BLFSSYSTEMD=https://www.linuxfromscratch.org/blfs/downloads/12.4-systemd/blfs-systemd-units-20241211.tar.xz" >> extension_openssh/packages.sh
-	echo "export PKG_BLFSBOOTSCRIPTS=https://anduin.linuxfromscratch.org/BLFS/blfs-bootscripts/blfs-bootscripts-20250225.tar.xz" >> extension_openssh/packages.sh
+	echo "export PKG_BLFSSYSTEMD=https://www.linuxfromscratch.org/blfs/downloads/12.4-systemd/blfs-systemd-units-20241211.tar.xz" >> extension_dhcpcd/packages.sh
+	echo "export PKG_BLFSBOOTSCRIPTS=https://anduin.linuxfromscratch.org/BLFS/blfs-bootscripts/blfs-bootscripts-20250225.tar.xz" >> extension_dhcpcd/packages.sh
 fi
 
 if [[ $LFS_VERSION == "13.0" ]]; then
-	echo "export PKG_BLFSSYSTEMD=https://www.linuxfromscratch.org/blfs/downloads/13.0-systemd/blfs-systemd-units-20251204.tar.xz" >> extension_openssh/packages.sh
-	echo "export PKG_BLFSBOOTSCRIPTS=https://anduin.linuxfromscratch.org/BLFS/blfs-bootscripts/blfs-bootscripts-20251220.tar.xz" >> extension_openssh/packages.sh
+	echo "export PKG_BLFSSYSTEMD=https://www.linuxfromscratch.org/blfs/downloads/13.0-systemd/blfs-systemd-units-20251204.tar.xz" >> extension_dhcpcd/packages.sh
+	echo "export PKG_BLFSBOOTSCRIPTS=https://anduin.linuxfromscratch.org/BLFS/blfs-bootscripts/blfs-bootscripts-20251220.tar.xz" >> extension_dhcpcd/packages.sh
 fi

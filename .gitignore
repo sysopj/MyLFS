@@ -21,7 +21,7 @@ logs/
 mnt/
 phase3/build_order.txt
 phase4/build_order.txt
-packages*
+packages-*
 packages/
 phase1/build_order.txt.backup
 phase2/build_order.txt.backup

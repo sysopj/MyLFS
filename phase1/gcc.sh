@@ -1,4 +1,7 @@
 # GCC Phase 1
+GCC_VERSION=$((basename $PKG_GCC .tar.xz) | cut -d "-" -f 2)
+GCC_VER_MAJ=$(echo $GCC_VERSION | cut -d "." -f 1)
+
 PKG_MPFR=$(basename $PKG_MPFR)
 PKG_GMP=$(basename $PKG_GMP)
 PKG_MPC=$(basename $PKG_MPC)
@@ -23,6 +26,7 @@ else
 	sed -e '/m64=/s/lib64/lib/' -e '/m32=/s/m32=.*/m32=..\/lib32$(call if_multiarch,:i386-linux-gnu)/' -i.orig gcc/config/i386/t-linux64
 fi
 
+[[ "$GCC_VER_MAJ" == "16" ]]  && [[ "$MULTILIB" == "true" ]] && sed '/STACK_REALIGN_DEFAULT/s/0/(!TARGET_64BIT \&\& TARGET_SSE)/' -i gcc/config/i386/i386.h
 
 mkdir build
 cd build
@@ -100,7 +104,7 @@ if [[ "$LFS_VERSION" == "11.3" ]] || [[ "$LFS_VERSION" == "12.0" ]] || [[ "$LFS_
     --enable-languages=c,c++
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]] && [[ "$MULTILIB" == "false" ]]; then
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "false" ]]; then
 	
 	../configure							\
 		--target=$LFS_TGT					\
@@ -127,7 +131,7 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_
 
 fi
 
-if [[ "$LFS_VERSION" == "11.3" ]] || [[ "$LFS_VERSION" == "12.0" ]] || [[ "$LFS_VERSION" == "12.1" ]] || [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]] && [[ "$MULTILIB" == "true" ]]; then
+if [[ "$LFS_VERSION" == "11.3" ]] || [[ "$LFS_VERSION" == "12.0" ]] || [[ "$LFS_VERSION" == "12.1" ]] || [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "true" ]]; then
 	[[ "$MULTILIB_mx32" == "true" ]] && mlist=m64,m32,mx32 || mlist=m64,m32
 	../configure										\
 		--target=$LFS_TGT								\
@@ -155,6 +159,36 @@ if [[ "$LFS_VERSION" == "11.3" ]] || [[ "$LFS_VERSION" == "12.0" ]] || [[ "$LFS_
 		# --disable-bootstrap is needed for a stage one with matching LFS_TGT with the host is x86_64-linux-gnu
 fi
 
+if [[ "$LFS_VERSION" == "13.1" ]] && [[ "$MULTILIB" == "true" ]]; then
+	[[ "$MULTILIB_mx32" == "true" ]] && mlist=m64,m32,mx32 || mlist=m64,m32
+	../configure										\
+		--target=$LFS_TGT								\
+		--prefix=$LFS/tools								\
+		--with-glibc-version=$GLIBC_VERSION				\
+		--with-sysroot=$LFS								\
+		--with-newlib									\
+		--without-headers								\
+		--enable-default-pie							\
+		--enable-default-ssp							\
+		--disable-fixincludes        					\
+		--enable-initfini-array							\
+		--disable-nls									\
+		--disable-shared								\
+		--enable-multilib 								\
+		--with-multilib-list=$mlist						\
+		--disable-decimal-float							\
+		--disable-threads								\
+		--disable-libatomic								\
+		--disable-libgomp								\
+		--disable-libquadmath							\
+		--disable-libssp								\
+		--disable-libvtv								\
+		--disable-libstdcxx								\
+		--enable-languages=c,c++						\
+		--disable-bootstrap
+		# --disable-bootstrap is needed for a stage one with matching LFS_TGT with the host is x86_64-linux-gnu
+fi
+
 make
 make install
 
@@ -166,7 +200,14 @@ if [[ "$LFS_VERSION" == "10.0" ]] || [[ "$LFS_VERSION" == "10.1" ]] || [[ "$LFS_
 
 fi
 
-if [[ "$LFS_VERSION" == "12.0" ]] || [[ "$LFS_VERSION" == "12.1" ]] || [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]];then
+#GCC 13,14,15
+if [[ "$LFS_VERSION" == "12.0" ]] || [[ "$LFS_VERSION" == "12.1" ]] || [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]];then
 	cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
 		$(dirname $($LFS_TGT-gcc -print-libgcc-file-name))/include/limits.h 
+fi
+
+#GCC 15
+if [[ "$LFS_VERSION" == "13.1" ]];then
+	cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
+		$($LFS_TGT-gcc -print-file-name=include)/limits.h
 fi

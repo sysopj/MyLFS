@@ -1,4 +1,7 @@
 # GCC Phase 2
+GCC_VERSION=$((basename $PKG_GCC .tar.xz) | cut -d "-" -f 2)
+GCC_VER_MAJ=$(echo $GCC_VERSION | cut -d "." -f 1)
+
 PKG_MPFR=$(basename $PKG_MPFR)
 PKG_GMP=$(basename $PKG_GMP)
 PKG_MPC=$(basename $PKG_MPC)
@@ -11,6 +14,17 @@ mv ${PKG_GMP%.tar*} gmp
 
 tar -xf ../$PKG_MPC
 mv ${PKG_MPC%.tar*} mpc
+
+if [[ "$MULTILIB" == "false" ]]; then
+	case $(uname -m) in
+		x86_64)
+			sed -e '/m64=/s/lib64/lib/' \
+				-i.orig gcc/config/i386/t-linux64	
+		;;
+	esac
+else
+	sed -e '/m64=/s/lib64/lib/' -e '/m32=/s/m32=.*/m32=..\/lib32$(call if_multiarch,:i386-linux-gnu)/' -i.orig gcc/config/i386/t-linux64
+fi
 
 if [[ "$LFS_VERSION" == "11.1" ]];then
 	case $(uname -m) in
@@ -86,17 +100,7 @@ if [[ "$LFS_VERSION" == "11.2" ]];then
 	ln -s gcc $LFS/usr/bin/cc
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]] && [[ "$MULTILIB" == "false" ]];then
-	case $(uname -m) in
-	  x86_64)
-		sed -e '/m64=/s/lib64/lib/' \
-			-i.orig gcc/config/i386/t-linux64
-	  ;;
-	esac
-
-	sed '/thread_header =/s/@.*@/gthr-posix.h/' \
-		-i libgcc/Makefile.in libstdc++-v3/include/Makefile.in
-
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "false" ]];then
 	mkdir build
 	cd build
 
@@ -126,18 +130,40 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_
 
 fi
 
-if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] || [[ "$LFS_VERSION" == "13.1" ]] && [[ "$MULTILIB" == "true" ]];then
-	case $(uname -m) in
-	  x86_64)
-		sed -e '/m64=/s/lib64/lib/' \
-			-e '/m32=/s/m32=.*/m32=..\/lib32$(call if_multiarch,:i386-linux-gnu)/' \
-			-i.orig gcc/config/i386/t-linux64
-	  ;;
-	esac
+if [[ "$LFS_VERSION" == "13.1" ]] && [[ "$MULTILIB" == "false" ]];then
+	mkdir build
+	cd build
 
-	sed '/thread_header =/s/@.*@/gthr-posix.h/' \
-		-i libgcc/Makefile.in libstdc++-v3/include/Makefile.in
+	../configure                   \
+		--build=$(../config.guess) \
+		--host=$LFS_TGT            \
+		--target=$LFS_TGT          \
+		--prefix=/usr              \
+		--with-build-sysroot=$LFS  \
+		--enable-default-pie       \
+		--enable-default-ssp       \
+		--disable-fixincludes      \
+		--disable-nls              \
+		--disable-multilib         \
+		--disable-libatomic        \
+		--disable-libgomp          \
+		--disable-libquadmath      \
+		--disable-libsanitizer     \
+		--disable-libssp           \
+		--disable-libvtv           \
+		--enable-languages=c,c++   \
+		CXX_FOR_TARGET="$LFS_TGT-gcc -nostdinc++" \
+		LDFLAGS_FOR_TARGET=-L$PWD/$LFS_TGT/libgcc \
+		target_configargs=gcc_cv_target_thread_file=posix
 
+	make
+	make DESTDIR=$LFS install
+
+	ln -s gcc $LFS/usr/bin/cc
+
+fi
+
+if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_VERSION" == "12.4" ]] || [[ "$LFS_VERSION" == "13.0" ]] && [[ "$MULTILIB" == "true" ]];then
 	mkdir build
 	cd build
 
@@ -160,6 +186,42 @@ if [[ "$LFS_VERSION" == "12.2" ]] || [[ "$LFS_VERSION" == "12.3" ]] || [[ "$LFS_
 		--disable-libssp                               \
 		--disable-libvtv                               \
 		--enable-languages=c,c++
+
+	make
+	make DESTDIR=$LFS install
+
+	ln -s gcc $LFS/usr/bin/cc
+
+fi
+
+
+if [[ "$LFS_VERSION" == "13.1" ]] && [[ "$MULTILIB" == "true" ]];then
+	mkdir build
+	cd build
+
+	[[ "$MULTILIB_mx32" == "true" ]] && mlist=m64,m32,mx32 || mlist=m64,m32
+	../configure                     \
+		--build=$(../config.guess)   \
+		--host=$LFS_TGT              \
+		--target=$LFS_TGT            \
+		--prefix=/usr                \
+		--with-build-sysroot=$LFS    \
+		--enable-default-pie         \
+		--enable-default-ssp         \
+		--disable-fixincludes        \
+		--disable-nls                \
+		--enable-multilib            \
+		--with-multilib-list=$mlist  \
+		--disable-libatomic          \
+		--disable-libgomp            \
+		--disable-libquadmath        \
+		--disable-libsanitizer       \
+		--disable-libssp             \
+		--disable-libvtv             \
+		--enable-languages=c,c++     \
+		CXX_FOR_TARGET="$LFS_TGT-gcc -nostdinc++" \
+		LDFLAGS_FOR_TARGET=-L$PWD/$LFS_TGT/libgcc \
+		target_configargs=gcc_cv_target_thread_file=posix
 
 	make
 	make DESTDIR=$LFS install

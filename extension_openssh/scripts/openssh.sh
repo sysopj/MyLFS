@@ -1,21 +1,32 @@
 # OpenSSH Phase 5
 # 12.2 SystemD
 
-install -v -g sys -m700 -d /var/lib/sshd &&
+install -v -g sys -m700 -d /var/lib/sshd
 
-groupadd -g 50 sshd        &&
-useradd  -c 'sshd PrivSep' \
-         -d /var/lib/sshd  \
-         -g sshd           \
-         -s /bin/false     \
-         -u 50 sshd
-		 
+[[ $(cat /etc/group | grep sshd) == "" ]] && groupadd -g 50 sshd
+[[ $(cat /etc/passwd | grep sshd:) == "" ]] && useradd  -c 'sshd PrivSep' \
+											 -d /var/lib/sshd  \
+											 -g sshd           \
+											 -s /bin/false     \
+											 -u 50 sshd
+
+# In OpenSSL 4.0, the ASN1_OCTET_STRING structure has been completely made opaque. Direct internal struct member access like octet->data and 
+# octet->length is no longer permitted and will throw a fatal compiler error. Instead, applications must use the proper, modernized accessor 
+# functions: ASN1_STRING_get0_data() and ASN1_STRING_length()
+#
+# Replaces attrp = octet->data; with attrp = ASN1_STRING_get0_data(octet);
+# Replaces octet->length with ASN1_STRING_length(octet) inside the o2i_ECPublicKey function call. 
+if [[ $LFS_VERSION == "13.1" ]]; then
+	sed -i 's/octet->data/ASN1_STRING_get0_data(octet)/g' ssh-pkcs11.c
+	sed -i 's/octet->length/ASN1_STRING_length(octet)/g' ssh-pkcs11.c
+fi
+
 ./configure --prefix=/usr                            \
             --sysconfdir=/etc/ssh                    \
             --with-privsep-path=/var/lib/sshd        \
             --with-default-path=/usr/bin             \
             --with-superuser-path=/usr/sbin:/usr/bin \
-            --with-pid-dir=/run                      &&
+            --with-pid-dir=/run
 make
 
 if $RUN_TESTS
