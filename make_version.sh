@@ -2505,7 +2505,7 @@ cat << "EOF" >> ./templates/boot__grub__grub.cfg
 EOF
 fi
 
-if [[ $LFS_VERSION == "12.2" ]] || [[ $LFS_VERSION == "12.3" ]] || [[ $LFS_VERSION == "12.4" ]] || [[ $LFS_VERSION == "13.0" ]]; then
+if [[ $LFS_VERSION == "12.2" ]] || [[ $LFS_VERSION == "12.3" ]] || [[ $LFS_VERSION == "12.4" ]] || [[ $LFS_VERSION == "13.0" ]] || [[ $LFS_VERSION == "13.1" ]]; then
 cat << "EOF" > ./templates/boot__grub__grub.cfg
 # Begin /boot/grub/grub.cfg
 set default=0

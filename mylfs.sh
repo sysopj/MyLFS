@@ -1859,11 +1859,13 @@ function convert_img_vdi {
 	fi	
 
 	if [[ $CUSTOM_VDI_UUID != "true" ]] && [ $skip == "false" ]; then
-		$(VBoxManage convertfromraw $LFS_IMG $(basename $LFS_IMG .img).vdi --format VDI --variant Standard)
+		TEMP=$(VBoxManage convertfromraw $LFS_IMG $(basename $LFS_IMG .img).vdi --format VDI --variant Standard)
+		unset TEMP
 	fi
 	
 	if [[ $CUSTOM_VDI_UUID == "true" ]] && [ $skip == "false" ]; then
-		$(VBoxManage convertfromraw $LFS_IMG $(basename $LFS_IMG .img).vdi --format VDI --variant Standard --uuid $VDI_UUID)
+		TEMP=$(VBoxManage convertfromraw $LFS_IMG $(basename $LFS_IMG .img).vdi --format VDI --variant Standard --uuid $VDI_UUID)
+		unset TEMP
 	fi
 	#" Fix for a complaint looking for a missing quote
 }

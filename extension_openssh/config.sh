@@ -24,12 +24,7 @@ if [[ $LFS_VERSION == "12.4" ]]; then
 	echo "export PKG_BLFSBOOTSCRIPTS=https://anduin.linuxfromscratch.org/BLFS/blfs-bootscripts/blfs-bootscripts-20250225.tar.xz" >> extension_openssh/packages.sh
 fi
 
-if [[ $LFS_VERSION == "13.0" ]]; then
-	echo "export PKG_BLFSSYSTEMD=https://www.linuxfromscratch.org/blfs/downloads/13.0-systemd/blfs-systemd-units-20251204.tar.xz" >> extension_openssh/packages.sh
-	echo "export PKG_BLFSBOOTSCRIPTS=https://anduin.linuxfromscratch.org/BLFS/blfs-bootscripts/blfs-bootscripts-20251220.tar.xz" >> extension_openssh/packages.sh
-fi
-
-if [[ $LFS_VERSION == "13.1" ]]; then
+if [[ $LFS_VERSION == "13.0" ]] || [[ $LFS_VERSION == "13.1" ]]; then
 	echo "export PKG_BLFSSYSTEMD=https://www.linuxfromscratch.org/blfs/downloads/13.0-systemd/blfs-systemd-units-20251204.tar.xz" >> extension_openssh/packages.sh
 	echo "export PKG_BLFSBOOTSCRIPTS=https://anduin.linuxfromscratch.org/BLFS/blfs-bootscripts/blfs-bootscripts-20251220.tar.xz" >> extension_openssh/packages.sh
 fi
